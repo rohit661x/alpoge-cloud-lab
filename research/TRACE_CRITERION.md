@@ -1,0 +1,15 @@
+# A degree-nine trace test for the order of the plastic constant modulo a prime
+
+Let p be a prime congruent to 1 modulo 3 such that f(X) = X³ − X − 1 is irreducible over Fₚ. Write α for any root in Fₚ³, where Fₚ³ here denotes the field with p³ elements. Define
+
+    H(U) = U⁹ − 18U⁶ + 54U³ + 27.
+
+**Claim.** If the order of α is prime to 3, H has exactly three distinct Fₚ-roots. If 3 divides the order, H has none. Thus the degree of gcd(H,Uᵖ−U) gives the complete 3-adic valuation of the order, with degree 3 corresponding to valuation 0 and degree 0 corresponding to valuation 1.
+
+**Proof.** The norm of α is 1 by the constant term of f. The kernel T of the norm map on the multiplicative group is cyclic of order N = p²+p+1. Writing p = 1+3k gives N = 3(1+3k+3k²). The cube map on T therefore has kernel of order 3 and its image is exactly the subgroup of elements of order prime to 3. The equation β³=α in T has either three solutions or none.
+
+For any solution β, put u = Tr(β) and v = Tr(β⁻¹), using the field trace to Fₚ. The characteristic polynomial of β is g(Z)=Z³−uZ²+vZ−1 because the product of the three conjugates is 1. The elementary symmetric sums of their inverses are v,u,1. Newton's identities thus give Tr(β³)=u³−3uv+3 and Tr(β⁻³)=v³−3uv+3. The elementary symmetric sums of the roots of f are 0,−1,1, so Tr(α)=0 and Tr(α⁻¹)=−1. It follows that u³−3uv+3=0 and u³−v³=1. In particular u≠0 and v=(u³+3)/(3u). Substitution gives (u³+3)³−27u³(u³−1)=0, or H(u)=0.
+
+Conversely H(0)=27≠0. From each root u define v by the same fraction. Reversing the substitution gives both trace equations. Over an algebraic closure let b₁,b₂,b₃ be the roots of g, counted with multiplicity. Their product is 1. The cubes have sum 0, pairwise product sum −1 (the sum of their inverses), and product 1. Their characteristic polynomial is f. In particular their cubes are distinct and Frobenius acts transitively on them. Cubing bijects the roots of g with those of f and commutes with Frobenius, so g is irreducible of degree 3. Its roots belong to the field of p³ elements and each has norm 1. Exactly one of them cubes to the originally fixed α. This construction recovers β from u, while the trace recovers u from β. The resulting bijection proves the count.
+
+**Reproduction.** With Python 3, run `python3 cubic_trace_criterion.py --check-through 2000`. For each eligible prime the command compares brute-force evaluation of H on Fₚ with polynomial gcd and a separate multiplication formula that computes α raised to N/3 in the cubic extension. It finds 17 primes of valuation 0 and 32 of valuation 1. The command `python3 cubic_trace_criterion.py --prime 18446744069414584321` returns the integer 1 for the Goldilocks field, meaning that the order has 3-adic valuation one. Here H has zero roots and its monic gcd with Uᵖ−U is the constant polynomial 1. The classifier assumes its argument is prime and checks the congruence and irreducibility. Its decision uses only gcd calculations with Uᵖ−U, with no order computation or factorization of N.

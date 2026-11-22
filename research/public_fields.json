@@ -1,0 +1,92 @@
+[
+  {
+    "id": "babybear",
+    "label": "BabyBear",
+    "modulus": "2013265921",
+    "sources": [
+      "https://raw.githubusercontent.com/Plonky3/Plonky3/main/baby-bear/src/baby_bear.rs"
+    ],
+    "rationale": "Plonky3 PRIME constant."
+  },
+  {
+    "id": "goldilocks",
+    "label": "Goldilocks",
+    "modulus": "18446744069414584321",
+    "sources": [
+      "https://raw.githubusercontent.com/Plonky3/Plonky3/main/goldilocks/src/goldilocks.rs"
+    ],
+    "rationale": "Plonky3 P constant."
+  },
+  {
+    "id": "pallas",
+    "label": "Pallas base / Vesta scalar",
+    "modulus": "28948022309329048855892746252171976963363056481941560715954676764349967630337",
+    "sources": [
+      "https://raw.githubusercontent.com/zcash/pasta_curves/main/src/fields/fp.rs"
+    ],
+    "rationale": "Zcash Pasta Fp modulus."
+  },
+  {
+    "id": "vesta",
+    "label": "Vesta base / Pallas scalar",
+    "modulus": "28948022309329048855892746252171976963363056481941647379679742748393362948097",
+    "sources": [
+      "https://raw.githubusercontent.com/zcash/pasta_curves/main/src/fields/fq.rs"
+    ],
+    "rationale": "Zcash Pasta Fq modulus."
+  },
+  {
+    "id": "bls12_381_base",
+    "label": "BLS12-381 base",
+    "modulus": "4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787",
+    "sources": [
+      "https://www.rfc-editor.org/rfc/rfc9380.html#section-8.8.1"
+    ],
+    "rationale": "RFC 9380 section 8.8.1 gives p."
+  },
+  {
+    "id": "bls12_381_scalar",
+    "label": "BLS12-381 scalar",
+    "modulus": "52435875175126190479447740508185965837690552500527637822603658699938581184513",
+    "sources": [
+      "https://raw.githubusercontent.com/zkcrypto/bls12_381/main/src/scalar.rs"
+    ],
+    "rationale": "zkcrypto scalar implementation gives q."
+  },
+  {
+    "id": "bn254_base",
+    "label": "BN254 base",
+    "modulus": "21888242871839275222246405745257275088696311157297823662689037894645226208583",
+    "sources": [
+      "https://raw.githubusercontent.com/arkworks-rs/curves/master/bn254/src/fields/fq.rs"
+    ],
+    "rationale": "Arkworks Fq modulus."
+  },
+  {
+    "id": "bn254_scalar",
+    "label": "BN254 scalar",
+    "modulus": "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+    "sources": [
+      "https://raw.githubusercontent.com/arkworks-rs/curves/master/bn254/src/fields/fr.rs"
+    ],
+    "rationale": "Arkworks Fr modulus."
+  },
+  {
+    "id": "curve25519",
+    "label": "Curve25519 base",
+    "modulus": "57896044618658097711785492504343953926634992332820282019728792003956564819949",
+    "sources": [
+      "https://www.rfc-editor.org/rfc/rfc7748.html#section-4.1"
+    ],
+    "rationale": "RFC 7748 section 4.1 gives p."
+  },
+  {
+    "id": "curve448",
+    "label": "Curve448 base",
+    "modulus": "726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018365439",
+    "sources": [
+      "https://www.rfc-editor.org/rfc/rfc7748.html#section-4.2"
+    ],
+    "rationale": "RFC 7748 section 4.2 gives p."
+  }
+]
