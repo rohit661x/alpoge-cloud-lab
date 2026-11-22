@@ -15,7 +15,7 @@ jobs:
       - name: Independently fetch the published application and weights
         working-directory: native-stage
         run: |
-          set -eu
+          set -euo pipefail
           git init -q app
           git -C app fetch --quiet --depth=1 https://github.com/lorenzorovida/LowMemoryFHEResNet20.git c818bd3519794191dfcf78c252bc209ee30e3e4a
           git -C app checkout --quiet --detach FETCH_HEAD
@@ -25,7 +25,7 @@ jobs:
       - name: Recompute three native plaintext references and compare every checkpoint
         working-directory: native-stage
         run: |
-          set -eu
+          set -euo pipefail
           mkdir -p work
           c++ -O2 -std=c++17 reference.cpp -o work/reference
           for degree in 59 200 119; do work/reference app/weights published-input.f64 "$degree" "work/ref$degree"; done
