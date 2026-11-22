@@ -1,0 +1,11 @@
+[package]
+name = "fold-probe"
+version = "0.1.0"
+edition = "2024"
+[dependencies]
+p3-baby-bear = "=0.8.0"
+p3-field = "=0.8.0"
+p3-monty-31 = "=0.8.0"
+p3-koala-bear = "=0.8.0"
+p3-fri = "=0.8.0"
+p3-matrix = "=0.8.0"

@@ -1,0 +1,45 @@
+name: Plonky3 frontier x86
+on:
+  push:
+    branches: [codex/plonky3-frontier-x86-20261122]
+permissions:
+  contents: read
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Pin compiler and identify hardware
+        run: |
+          set -eu
+          test "$(uname -m)" = x86_64
+          rustup toolchain install 1.100.0 --profile minimal
+          rustup default 1.100.0
+          mkdir -p frontier/linear/results frontier/fri/results
+          { uname -a; lscpu; rustc -Vv; cargo -V; git rev-parse HEAD; env | grep -E '^(RUNNER_(ARCH|OS)|Image(OS|Version)|GITHUB_RUN_ID)='; } > frontier/metadata.txt
+      - name: Linear interpolation
+        working-directory: frontier/linear
+        run: |
+          unset RUSTFLAGS
+          cargo build --release --locked
+          for seed in 1021 4111 7963; do target/release/linear-frontier "$seed" > "results/seed-$seed.csv"; done
+          python3 summarize.py
+      - name: Multilayer FRI
+        working-directory: frontier/fri
+        env:
+          RUSTFLAGS: "-C target-cpu=native"
+        run: |
+          cargo build --release --locked
+          for seed in 370817 842771 1301081; do target/release/fold-probe "$seed" > "results/seed-$seed.csv"; done
+          python3 verify.py results > results/summary.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x86-frontier-results
+          retention-days: 7
+          path: |
+            frontier/metadata.txt
+            frontier/linear/results/
+            frontier/fri/results/

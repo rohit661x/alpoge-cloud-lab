@@ -1,0 +1,10 @@
+[package]
+name = "linear-frontier"
+version = "0.1.0"
+edition = "2024"
+publish = false
+[dependencies]
+plonky3-native = { path = "basis" }
+p3-baby-bear = "=0.8.0"
+p3-koala-bear = "=0.8.0"
+p3-field = "=0.8.0"
