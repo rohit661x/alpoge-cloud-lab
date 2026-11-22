@@ -1,0 +1,28 @@
+name: Verify cubic-period review archive
+on:
+  push:
+    branches: [verification/cubic-period-review-20261121]
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Extract the frozen archive and run Python verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 --version
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 12), sys.version'
+          sha256sum --check inputs/cubic-period-review.sha256
+          destination="$RUNNER_TEMP/cubic-period-review"
+          mkdir -p "$destination"
+          unzip -q inputs/cubic-period-review.zip -d "$destination"
+          mapfile -t scripts < <(find "$destination" -type f -name verify.py)
+          test "${#scripts[@]}" -eq 1
+          python3 "${scripts[0]}"
