@@ -1,0 +1,26 @@
+Sun Nov 22 21:15:11 UTC 2026
+Linux x86_64
+Architecture:                            x86_64
+CPU(s):                                  4
+On-line CPU(s) list:                     0-3
+Model name:                              AMD EPYC 7763 64-Core Processor
+Hypervisor vendor:                       Microsoft
+NUMA node0 CPU(s):                       0-3
+4
+/sys/fs/cgroup/memory.max
+max
+/sys/fs/cgroup/cpu.max
+max 100000
+/sys/fs/cgroup/memory.current
+3301376
+/sys/fs/cgroup/memory.swap.max
+max
+MemTotal:       16377412 kB
+MemAvailable:   14986904 kB
+SwapTotal:             0 kB
+Filesystem        1B-blocks        Used    Available Use% Mounted on
+/dev/loop4      33636024320 20729495552  11171774464  65% /workspaces
+/dev/sda1      126225022976  2637041664 117128859648   3% /tmp
+Filesystem     Type 1K-blocks     Used Available Use% Mounted on
+/dev/loop4     ext4  32847680 20243648  10909936  65% /workspaces
+/dev/sda1      ext4 123266624  2575236 114383652   3% /tmp
