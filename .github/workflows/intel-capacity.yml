@@ -1,0 +1,17 @@
+name: Measure Intel macOS runner
+on:
+  push:
+    branches: [resnet-followup-intel-capacity-20261122]
+permissions:
+  contents: read
+jobs:
+  capacity:
+    runs-on: macos-15-intel
+    timeout-minutes: 3
+    steps:
+      - name: Probe allocated hardware
+        run: |
+          uname -m
+          sysctl machdep.cpu.brand_string hw.memsize hw.logicalcpu
+          vm_stat
+          df -k .
