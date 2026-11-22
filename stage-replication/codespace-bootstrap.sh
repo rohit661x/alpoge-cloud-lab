@@ -19,7 +19,7 @@ e=stage-replication/codespace-evidence
 git add "$e/capacity.txt"
 git commit -qm 'Record private Codespace capacity' && git push origin HEAD || true
 sudo apt-get -qq update
-sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install -y cmake g++-12 libgomp1 git
+sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install -y cmake g++-12 libgomp1 git python3
 export CC=gcc-12 CXX=g++-12 BUILD_JOBS=2
 bash stage-replication/build.sh /tmp/stage-native >"$e/build.log" 2>&1 || {
   tail -35 "$e/build.log" >"$e/build-status.txt"
