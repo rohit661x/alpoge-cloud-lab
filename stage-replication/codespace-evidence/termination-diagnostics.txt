@@ -1,0 +1,40 @@
+Sun Nov 22 09:26:56 PM UTC 2026
+ 21:26:56 up 50 min,  0 user,  load average: 1.13, 1.84, 1.50
+    PID COMMAND           RSS
+    641 MainThread      380412
+    698 MainThread      170400
+    483 MainThread      138092
+   1456 copilot-runtime 112404
+   1497 MainThread      81304
+   1126 MainThread      80096
+   2713 MainThread      67176
+   2045 MainThread      65940
+    694 MainThread      61808
+   2778 bash             5684
+   7327 bash             5612
+   8303 ps               4344
+   8300 bash             3712
+   8304 head             2232
+      1 sh               1920
+    474 sh               1916
+   1727 sh               1916
+MemTotal:       16377412 kB
+MemAvailable:   14364540 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+/sys/fs/cgroup/memory.events
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+/sys/fs/cgroup/memory.pressure
+some avg10=0.00 avg60=0.00 avg300=0.00 total=531659
+full avg10=0.00 avg60=0.00 avg300=0.00 total=527517
+/proc/pressure/memory
+some avg10=0.00 avg60=0.27 avg300=0.34 total=3982008
+full avg10=0.00 avg60=0.26 avg300=0.32 total=3621037
+dmesg: read kernel buffer failed: Operation not permitted
+Filesystem        1B-blocks       Used    Available Use% Mounted on
+/dev/sda1      126225022976 5515714560 114250186752   5% /tmp
