@@ -1,0 +1,63 @@
+name: Perrin follow-up verification
+on:
+  push:
+    branches:
+      - verification/perrin-followup-20261121
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify and unpack the frozen research archive
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          sha256sum -c inputs/perrin-followup.sha256 | tee evidence/archive-check.log
+          sha256sum inputs/perrin-followup.zip | tee evidence/archive.sha256
+          unzip -q inputs/perrin-followup.zip -d "$RUNNER_TEMP"
+          python3 --version | tee evidence/python-version.txt
+      - name: Run the Python verifier
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/perrin-followup"
+          python3 -B verify.py 2>&1 | tee "$GITHUB_WORKSPACE/evidence/python.log"
+      - name: Install PARI and reproduce the eligible-prime counts
+        run: |
+          set -euo pipefail
+          sudo apt-get -qq update
+          sudo apt-get -y --no-install-recommends install pari-gp
+          gp --version 2>&1 | tee evidence/pari-version.txt
+          cd "$RUNNER_TEMP/perrin-followup"
+          python3 -B verify.py --pari 2>&1 | tee "$GITHUB_WORKSPACE/evidence/pari.log"
+      - name: Check the finite statements in Lean 4.33.1
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          dist=lean-4.33.1-linux
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://github.com/leanprover/lean4/releases/download/v4.33.1/$dist.tar.zst" -o "$dist.tar.zst"
+          echo "890afd185370f85666025b883914ab4f4b339136f8c96167b69cfb62aecaf235  $dist.tar.zst" | sha256sum -c
+          tar --zstd -xf "$dist.tar.zst"
+          "$RUNNER_TEMP/$dist/bin/lean" --version | tee "$GITHUB_WORKSPACE/evidence/lean-version.txt"
+          cd perrin-followup
+          "$RUNNER_TEMP/$dist/bin/lean" -DwarningAsError=true verification/LocalCounts.lean 2>&1 | tee "$GITHUB_WORKSPACE/evidence/lean.log"
+          if grep -Eiq 'sorryAx|(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)|warning:' "$GITHUB_WORKSPACE/evidence/lean.log"; then
+            exit 1
+          fi
+          if grep -En '(^|[^[:alnum:]_])(sorry|admit|axiom)([^[:alnum:]_]|$)' verification/LocalCounts.lean; then
+            exit 1
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: perrin-followup-evidence
+          path: evidence/
+          if-no-files-found: error
