@@ -1,0 +1,75 @@
+name: Replay the Mathlib GRH challenge background
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  background:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out audit scripts
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Check out pinned con-leche sources
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: leanprover/con-leche
+          ref: 5dc36dc15b7bee891a02406b78a8ac816a47baad
+          path: checker
+          persist-credentials: false
+      - name: Install the matching, checksum-pinned release of Lean
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/background-evidence"
+          { df -h .; free -h; } | tee "$GITHUB_WORKSPACE/background-evidence/resources.txt"
+          test "$(git -C checker rev-parse HEAD)" = 5dc36dc15b7bee891a02406b78a8ac816a47baad
+          test "$(cat checker/lean-toolchain)" = leanprover/lean4:v4.36.0
+          cd "$RUNNER_TEMP"
+          curl --fail --silent --show-error --location --retry 3 'https://github.com/leanprover/lean4/releases/download/v4.36.0/lean-4.36.0-linux.tar.zst' -o lean-4.36.0-linux.tar.zst
+          echo '2b7ab1ed8b92d2e6abfaf41344823b510064dbc9c0260cac73eb496ab2dea6eb  lean-4.36.0-linux.tar.zst' | sha256sum --check
+          tar --zstd -xf lean-4.36.0-linux.tar.zst
+          "$RUNNER_TEMP/lean-4.36.0-linux/bin/lean" --version
+          echo "$RUNNER_TEMP/lean-4.36.0-linux/bin" >> "$GITHUB_PATH"
+      - name: Build the checker
+        working-directory: checker
+        run: lake build con-leche
+      - name: Pin the challenge and remove exactly its five target theorem records
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 'https://math.mit.edu/~drew/grh/challenge.ndjson.zst' -o "$RUNNER_TEMP/challenge.ndjson.zst"
+          python3 research/audit_export.py challenge "$RUNNER_TEMP/challenge.ndjson.zst" --write-background "$RUNNER_TEMP/background.ndjson" | tee background-evidence/challenge-background.json
+          cd "$RUNNER_TEMP"
+          echo '8d7dc80c14d6c55c397e2351799f1b30ee16391833a4a7bcc5e228a996df10fd  background.ndjson' | sha256sum --check
+      - name: Replay all 51,687 remaining declaration records
+        run: |
+          set -euo pipefail
+          /usr/bin/time -v checker/.lake/build/bin/con-leche --verified --jobs=4 --progress=20% "$RUNNER_TEMP/background.ndjson" 2>&1 | tee "$RUNNER_TEMP/background-replay.log"
+          grep -Fx 'con-leche: accepted 51687 declarations (--verified)' "$RUNNER_TEMP/background-replay.log"
+      - name: Require the unmodified challenge to decline a placeholder
+        run: |
+          set -euo pipefail
+          zstd -qdc --long=27 "$RUNNER_TEMP/challenge.ndjson.zst" > "$RUNNER_TEMP/challenge.ndjson"
+          status=0
+          checker/.lake/build/bin/con-leche --verified --jobs=1 "$RUNNER_TEMP/challenge.ndjson" > "$RUNNER_TEMP/control.log" 2>&1 || status=$?
+          cat "$RUNNER_TEMP/control.log"
+          test "$status" = 2
+          grep -F 'sorryAx' "$RUNNER_TEMP/control.log"
+
+      - name: Preserve the independent and negative-control transcripts
+        if: always()
+        run: |
+          mkdir -p background-evidence
+          for log in background-replay control; do
+            if test -f "$RUNNER_TEMP/$log.log"; then cp "$RUNNER_TEMP/$log.log" background-evidence/; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: challenge-background-replay
+          path: background-evidence/

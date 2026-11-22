@@ -38,6 +38,7 @@ jobs:
           timeout 180 lean lean/Curve25519Period.lean 2>&1 | tee crypto-evidence/lean-curve.log
           timeout 180 lean lean/TraceAction.lean 2>&1 | tee crypto-evidence/lean-action.log
           timeout 180 lean lean/PrefixArithmetic.lean 2>&1 | tee crypto-evidence/lean-prefix.log
+          timeout 180 lean lean/TraceWindowArithmetic.lean 2>&1 | tee crypto-evidence/lean-window.log
           timeout 180 lean lean/TransformPrime.lean 2>&1 | tee crypto-evidence/lean-transform.log
           if grep -q 'sorryAx' crypto-evidence/lean-*.log; then exit 1; fi
       - uses: actions/upload-artifact@v4
