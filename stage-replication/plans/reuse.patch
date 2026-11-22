@@ -1,0 +1,76 @@
+--- a/src/FHEController.cpp
++++ b/src/FHEController.cpp
+@@ -681,20 +681,18 @@
+     int padding = 1;
+ 
+     auto digits = context->EvalFastRotationPrecompute(in);
+-
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits), -img_width ));
++    auto left = context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits);
++    auto right = context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits);
++
++    c_rotations.push_back(context->EvalRotate(left, -img_width));
+     c_rotations.push_back(context->EvalFastRotation(in, -img_width, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits), -img_width ));
+-    c_rotations.push_back(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits));
++    c_rotations.push_back(context->EvalRotate(right, -img_width));
++    c_rotations.push_back(left);
+     c_rotations.push_back(in);
+-    c_rotations.push_back(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits), img_width));
++    c_rotations.push_back(right);
++    c_rotations.push_back(context->EvalRotate(left, img_width));
+     c_rotations.push_back(context->EvalFastRotation(in, img_width, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits), img_width ));
++    c_rotations.push_back(context->EvalRotate(right, img_width));
+ 
+     Ptxt bias = encode(read_values_from_file("../weights/conv1bn1-bias.bin", scale), in->GetLevel(), 16384);
+ 
+@@ -716,8 +714,9 @@
+ 
+         Ctxt res = sum->Clone();
+ 
+-        res = add(res, context->EvalRotate(sum, 1024));
+-        res = add(res, context->EvalRotate(context->EvalRotate(sum, 1024), 1024));
++        auto next_channel = context->EvalRotate(sum, 1024);
++        res = add(res, next_channel);
++        res = add(res, context->EvalRotate(next_channel, 1024));
+         res = mult(res, mask_from_to(0, 1024, res->GetLevel()));
+ 
+ 
+@@ -750,22 +749,18 @@
+     int padding = 1;
+ 
+     auto digits = context->EvalFastRotationPrecompute(in);
+-
+-    //TODO: combinations of rotations in order to perform only 8 rotations
+-
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits), -img_width ));
++    auto left = context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits);
++    auto right = context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits);
++
++    c_rotations.push_back(context->EvalRotate(left, -img_width));
+     c_rotations.push_back(context->EvalFastRotation(in, -img_width, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits), -img_width ));
+-    c_rotations.push_back(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits));
++    c_rotations.push_back(context->EvalRotate(right, -img_width));
++    c_rotations.push_back(left);
+     c_rotations.push_back(in);
+-    c_rotations.push_back(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, -padding, context->GetCyclotomicOrder(), digits), img_width));
++    c_rotations.push_back(right);
++    c_rotations.push_back(context->EvalRotate(left, img_width));
+     c_rotations.push_back(context->EvalFastRotation(in, img_width, context->GetCyclotomicOrder(), digits));
+-    c_rotations.push_back(
+-            context->EvalRotate(context->EvalFastRotation(in, padding, context->GetCyclotomicOrder(), digits), img_width ));
++    c_rotations.push_back(context->EvalRotate(right, img_width));
+ 
+     Ptxt bias = encode(read_values_from_file("../weights/layer" + to_string(layer) + "-conv" + to_string(n) + "bn" + to_string(n) + "-bias.bin", scale), in->GetLevel(), 16384);
+ 

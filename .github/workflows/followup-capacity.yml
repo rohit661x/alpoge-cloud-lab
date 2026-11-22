@@ -1,18 +1,19 @@
-name: Followup native runner capacity
-on: push
+name: Followup native Linux build
+on:
+  push:
+    branches: [resnet-followup-capacity-20261122]
 permissions:
   contents: read
 jobs:
-  capacity:
+  build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    timeout-minutes: 55
     steps:
-      - name: Probe allocated hardware
-        run: |
-          uname -m
-          lscpu | grep -E 'Architecture|CPU\(s\)|Model name|Hypervisor'
-          nproc
-          test ! -f /sys/fs/cgroup/memory.max || cat /sys/fs/cgroup/memory.max
-          test ! -f /sys/fs/cgroup/cpu.max || cat /sys/fs/cgroup/cpu.max
-          grep -E 'MemTotal|MemAvailable|SwapTotal' /proc/meminfo
-          df -B1 .
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile five stage arms and packing oracle
+        env:
+          CC: gcc-12
+          CXX: g++-12
+        run: bash stage-replication/build.sh "$RUNNER_TEMP/native-stage"
