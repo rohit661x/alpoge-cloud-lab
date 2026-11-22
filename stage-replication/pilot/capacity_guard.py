@@ -34,7 +34,7 @@ def run(command, log, cwd, env, estimate, journal):
     if available < estimate + reserve:
         journal(dict(record, status='admission-rejected'))
         raise RuntimeError(f'capacity admission: {available} available; {estimate} estimate plus {reserve} reserve')
-    minimum, maximum_rss = available, 0
+    minimum, maximum_rss, maximum_threads = available, 0, 0
     start = time.monotonic()
     with log.open('w') as stream:
         process = subprocess.Popen(list(map(str, command)), cwd=cwd, env=env, stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
@@ -45,6 +45,8 @@ def run(command, log, cwd, env, estimate, journal):
                 minimum = min(minimum, available)
                 try:
                     for line in Path(f'/proc/{process.pid}/status').read_text().splitlines():
+                        if line.startswith('Threads:'):
+                            maximum_threads = max(maximum_threads, int(line.split()[1]))
                         if line.startswith('VmRSS:'):
                             maximum_rss = max(maximum_rss, int(line.split()[1]) * 1024)
                 except FileNotFoundError:
@@ -59,6 +61,6 @@ def run(command, log, cwd, env, estimate, journal):
                 os.killpg(process.pid, signal.SIGKILL)
             rc = process.wait()
         journal(dict(record, status='complete' if rc==0 and reason is None else 'terminated', returncode=rc, reason=reason,
-                     minimum_available=minimum, max_sampled_rss=maximum_rss, swap_after=memory()[1], seconds=time.monotonic()-start))
+                     minimum_available=minimum, max_sampled_rss=maximum_rss, max_process_threads=maximum_threads, swap_after=memory()[1], seconds=time.monotonic()-start))
         if rc or reason:
             raise RuntimeError(f'process exit {rc} {reason or ""}, see {log}')
