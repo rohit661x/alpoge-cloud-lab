@@ -1,0 +1,30 @@
+Prospective local control for RC 0.1.0-rc.1
+
+Question. From a shared-coordinate input table, does postponing conversion
+shorten warm, scalar base-field interpolation with caller-owned intermediate
+and output buffers? Does this hold even when reducing only two inputs to one?
+
+Primary configuration selected before timing: BabyBear degree 4, N=32768,
+eight inputs per output. Secondary grid: both fields, degrees 4 and 8,
+reduction factors 2, 8 and 128; twelve configurations including the primary.
+Use the candidate's pinned legacy single-degree maps, default Cargo release
+flags and identical reusable buffers. Both routes fuse their first and last
+steps. At reduction 2 both write straight into the final output. The input is
+read-only and the outputs are native. No allocation in either timed region.
+
+Twelve sequential fresh processes on the available Apple host. Inside each,
+shuffle case order and the four early-first and four late-first timing pairs
+per case, drawing order and input randomness from separate deterministic
+streams. Warm up both routes, check both against a direct Boolean-cube sum,
+and check every timed output after stopping the clock. Keep every correct
+measurement and record nanoseconds. No rerunning to select faster data.
+
+Primary summary: take the median early/late time ratio within each process,
+then the median of twelve process summaries. Also give their minimum/maximum,
+count above 1, and separate medians by route order. Call the primary direction
+consistent in this run only if all 12 process medians exceed 1 and both order
+strata exceed 1 in aggregate. Apply the same descriptive checks to secondary
+cases while identifying them as exploratory. No population-level confidence
+claim. Hardware scheduling, thermal state and previous cache activity remain
+uncontrolled. This is one machine, one compiler configuration, one workload
+family, and a test of conversion placement rather than whole-prover time.

@@ -1,0 +1,38 @@
+name: Secondary x86 interpolation control
+on:
+  push:
+    branches: [plonky3-control-x86-20261122]
+permissions:
+  contents: read
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: interpolation-control
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replay twelve blocks on the pinned toolchain
+        env:
+          RUSTUP_TOOLCHAIN: 1.100.0
+        run: |
+          set -eu
+          sha256sum -c before-run.sha256
+          rustup toolchain install 1.100.0 --profile minimal
+          mkdir evidence
+          rustc -vV > evidence/rustc.txt
+          grep -Fx 'commit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a' evidence/rustc.txt
+          python3 --version > evidence/python.txt
+          lscpu | grep -E '^(Architecture|CPU\(s\)|Model name|Hypervisor vendor|Virtualization type):' > evidence/cpu.txt
+          cat /etc/os-release > evidence/os.txt
+          date -u > evidence/start-utc.txt
+          python3 control.py run plonky3-basis-public-rc.zip evidence/timings.csv > evidence/summary.csv
+          date -u > evidence/end-utc.txt
+          python3 control.py summarize evidence/timings.csv | cmp - evidence/summary.csv
+          sha256sum evidence/{timings,summary}.csv > evidence/results.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: secondary-control-evidence
+          path: interpolation-control/evidence
+          retention-days: 7
