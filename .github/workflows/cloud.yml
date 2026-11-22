@@ -35,7 +35,9 @@ jobs:
           python3 -B cubic_crypto_lab.py walk --start 340282366762482138508632908526633615361 --count 5 > crypto-evidence/walk-wrap.jsonl
           export PATH="$PWD/.alpoge-build/lean-4.33.1-linux/bin:$PATH"
           timeout 180 lean lean/GoldilocksOrder.lean 2>&1 | tee crypto-evidence/lean-order.log
-          if grep -q 'sorryAx' crypto-evidence/lean-order.log; then exit 1; fi
+          timeout 180 lean lean/Curve25519Period.lean 2>&1 | tee crypto-evidence/lean-curve.log
+          timeout 180 lean lean/TraceAction.lean 2>&1 | tee crypto-evidence/lean-action.log
+          if grep -q 'sorryAx' crypto-evidence/lean-*.log; then exit 1; fi
       - uses: actions/upload-artifact@v4
         with:
           name: cubic-crypto-evidence
@@ -59,3 +61,39 @@ jobs:
           name: gaussian-verification
           path: evidence/
           if-no-files-found: ignore
+
+  independent-census:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install PARI and the transitive Galois group tables
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y --no-install-recommends pari-gp pari-galdata
+      - name: Recompute field orders and factorization patterns through one million
+        run: |
+          set -euo pipefail
+          mkdir -p deep-evidence
+          gp --version > deep-evidence/pari-version.txt 2>&1
+          gp -q -f research/pari_audit.gp > "$RUNNER_TEMP/pari-rows.jsonl"
+          gzip -n -c "$RUNNER_TEMP/pari-rows.jsonl" > deep-evidence/pari-rows.jsonl.gz
+          python3 -B galois_census.py deep-evidence/pari-rows.jsonl.gz > deep-evidence/census.json
+          python3 -B matrix_periods.py > deep-evidence/exact-periods.json
+          python3 -B - <<'PYTHON'
+          import json
+          from pathlib import Path
+          from cubic_lift import cubic_lift
+          from cubic_trace_criterion import root_count, F
+          records = json.loads(Path("research/public_fields.json").read_text())
+          lifts = {r["id"]: cubic_lift(p) for r in records for p in [int(r["modulus"])]
+                   if p % 3 == 1 and root_count(F,p) == 0}
+          Path("deep-evidence/explicit-lifts.json").write_text(json.dumps(lifts, indent=2))
+          PYTHON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deep-cubic-audit
+          path: deep-evidence/
+          if-no-files-found: error

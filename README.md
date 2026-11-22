@@ -4,6 +4,8 @@ This Python 3.8+ project lets you compute finite pieces of Alpöge’s formaliza
 
 The [cubic-field study](research/RESULTS.md) certifies a norm-one generator for the Goldilocks field and compares the same trinomial over ten public fields.
 
+The [independent audit and extensions](research/DEEP_AUDIT.md) give a degree-three cube test, its prime density, explicit roots, and the exact Perrin period over the Curve25519 base field.
+
 ## A generated operator at a 1,024-bit prime
 
 The `cm` command builds lattice classes and their prime-index neighbor operators from a negative fundamental discriminant. Its small-prime route enumerates sublattices and checks the result by counting lattice vectors. Its large-prime route recovers the neighbors using modular square roots, so its work at this discriminant does not scale linearly with the value of the prime.

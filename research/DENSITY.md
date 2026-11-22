@@ -1,0 +1,41 @@
+# A cubic resolvent and an exact density for the plastic constant
+
+Set f(X)=X³−X−1, H(U)=U⁹−18U⁶+54U³+27 and q(t)=t³−6t−3. The identity H(U)=27q(U³/3−2) is over Q. For an eligible prime p (p≡1 mod 3 and f irreducible mod p), a root of f is a cube in the norm-one group if and only if q splits completely mod p. Otherwise q is irreducible mod p. The relative natural densities among eligible primes are 1/3 and 2/3, respectively. Among all rational primes the two densities are 1/18 and 1/9.
+
+## The nine choices
+
+Let a₁,a₂,a₃ be the three roots of f in a fixed algebraic closure. Their product is 1. Choose cube roots bᵢ of aᵢ with product 1, and write ζ for a primitive cube root of unity. Over every characteristic other than 3 and 23, the nine possible assignments of such cube roots to the three specified roots form a torsor for the two-dimensional vector space
+
+    V = {(x₁,x₂,x₃) in F₃³ : x₁+x₂+x₃=0}.
+
+The tuple at x assigns ζ^{xᵢ}bᵢ to aᵢ. Send it to u, the sum of the assigned values. Its inverse-value sum v satisfies u³−3uv+3=0 and v³−3uv+3=−1, by applying the elementary cube-sum identity to the three values and their inverses. Hence u≠0, v=(u³+3)/(3u), and H(u)=0. Equal u's give equal v's, hence the same three roots of Z³−uZ²+vZ−1. The cube of each root identifies its coordinate uniquely because the aᵢ are distinct. Thus this map is a bijection to the nine distinct roots of H, equivariantly for field automorphisms. The diagonal line D=⟨(1,1,1)⟩ acts by common scaling. The three cosets of D are in bijection with the three roots t=u³/3−2 of q. Distinct quotient points give distinct t since nonzero values with equal cubes differ by common scaling.
+
+## The Frobenius test
+
+Put L=Q(a₁,a₂,a₃,ζ), E=L(b₁,b₂,b₃), the splitting field of f(X³). No primes outside {3,23} ramify in E. Indeed f(X³) modulo any such prime is separable since f has discriminant −23, has nonzero roots, and cubing is separable there. Over a prime p outside this set the Frobenius permutations on the three root sets agree with those in the residue algebraic closure. If the base action permutes coordinates by π and sends ζ to ζ^ε, its linear action on differences of tuples is ρ=επ, with π acting by permutation of coordinates. Its action on tuple labels x is affine, x↦c+ρx for some c in V. Field automorphisms act on assignments by applying the automorphism to both the value and its argument.
+
+At an eligible p, π is a 3-cycle s and ε=1. Both ker(1−s) and im(1−s) equal D: the kernel consists of constant triples, the image has dimension one, and the three coordinate differences of any sum-zero triple are equal in characteristic three. A fixed assignment exists exactly if c∈D, in which case precisely three assignments are fixed. On V/D the induced action is translation by c modulo D. Therefore either all three q-roots are fixed or the permutation is a 3-cycle, according as c∈D or c∉D. A Frobenius-fixed assignment at an eligible prime consists of β,βᵖ,β^(p²) in cyclic order above the three aᵢ, with β^(p³)=β. The product condition says its norm is one. Conversely any norm-one cube root of the chosen a₁ gives exactly one fixed assignment. This proves the cubic test. Since the norm-one group has size p²+p+1≡3 mod 9 for eligible p, the test decides whether the order has 3-adic valuation zero or one.
+
+## The fields and the densities
+
+The rational root test and the discriminant of f give Galois group S₃ with unique quadratic subfield Q(√−23), distinct from Q(ζ)=Q(√−3). Hence Gal(L/Q)=S₃×C₂. The polynomial q is Eisenstein at 3 and has discriminant 621=9·69, hence its splitting field M has Galois group S₃ and quadratic subfield Q(√69). This quadratic field is in L. But M cannot be contained in L: any surjection S₃×C₂→S₃ kills the central C₂ and induces an automorphism on the first factor, so its S₃ quotient field is precisely the splitting field of f. The quadratic subfields differ. Therefore M∩L=Q(√69) and [ML:L]=3.
+
+There are two eligible elements (s,1) in Gal(L/Q). Each acts trivially on Q(√69) and has three lifts to Gal(ML/Q), with the three possible restrictions in Gal(M/Q(√69))=A₃. Exactly one lift for each eligible element acts trivially on M. Chebotarev's density theorem applied to these conjugacy-invariant subsets of the 36-element group gives densities 2/36 and 4/36. This proves unconditional asymptotic natural densities with no assertion of an effective error bound or finite-range proportions.
+
+## The full degree and faithful permutation model
+
+The kernel A=Gal(E/L) embeds as translations in V. It is stable under s. The quotient action of A on V/D is nontrivial since M⊂E and [ML:L]=3. In particular A contains v outside D. Then v and (1−s)v are independent, the latter a nonzero vector of D. Thus A=V and [E:Q]=108. The linear action (π,ε)↦επ on V is faithful: an odd permutation exchanging two coordinates is not scalar (it fixes D pointwise and negates the difference of the exchanged coordinate vectors); a nonidentity 3-cycle is not scalar (its fixed space is precisely D). No nonidentity permutation acts as −I, since all permutations fix D pointwise. Thus Gal(E/Q) is exactly the 108 affine maps x↦c+επx, with c∈V, π∈S₃ and ε∈{1,−1}. All occur because there are 108 distinct maps, and for any base automorphism its lifts differ by all translations. The action on H-roots is faithful, so E is also the splitting field of H. For each unramified p, factor degrees of f and H are respectively the cycle lengths on three coordinate indices and nine tuple labels. Each conjugacy-stable set of these maps has density its size divided by 108. This argument counts elements, not conjugacy classes with equal weights.
+
+As small witnesses, direct evaluation over the residue field gives no f-root at either 13 or 151. The H-root sets are empty at 13 and {46,113,143} at 151. One can verify all these claims by iterating the residues 0≤x<p in the displayed polynomials. The field-degree proof does not rely on the witnesses.
+
+## Primes in prescribed residue classes
+
+The same one-third law holds after restricting to any fixed reduced residue class that admits eligible primes away from the ramified primes. In particular, it holds if we additionally require 2ᵏ to divide p−1, as in a field that supports a radix-two number-theoretic transform of length 2ᵏ.
+
+Write G=V⋊(S₃×C₂). Conjugation by the linear element −I takes a translation by v to translation by −v. Their commutator is translation by −2v, and −2 is invertible in F₃. Thus the commutator subgroup contains every translation. The abelianization of G is the abelianization of S₃×C₂, namely C₂×C₂. Its fixed-field counterpart, the maximal abelian subextension of E, is B=Q(√−23,√−3). Its three quadratic subfields have discriminants −23, −3 and 69.
+
+For a fixed modulus m, the intersection of E with the cyclotomic field Q(ζₘ) lies in B. Every eligible element acts trivially on B because its coordinate permutation is even and it fixes the cube roots of unity. A reduced class a mod m prescribes the automorphism ζₘ↦ζₘᵃ. If this automorphism is nontrivial on the intersection, there are no unramified eligible primes in that class. Otherwise every eligible group element is compatible with it. Automorphisms of the compositum are pairs agreeing on the intersection, so conditioning on the progression assigns equal weight to each compatible element of G. Of the 18 eligible elements, six have a fixed tuple. This gives relative density 1/3 within the eligible primes of every compatible fixed progression.
+
+For a power-of-two modulus the intersection is Q. Any nontrivial subfield of B contains a quadratic field ramified at 3 or 23, whereas the power-of-two cyclotomic field ramifies only at 2. Therefore among primes p≡1 mod 2ᵏ the eligible cube cases have density 1/18 for **each fixed k**, and the eligible noncube cases density 1/9. This asymptotic does not specify an error term for a fixed bit length or a modulus growing with the search range.
+
+[Chebotarev density and Frobenius distributions, A. V. Sutherland](https://math.mit.edu/~drew/conm14904.pdf) · [LMFDB entry for the cubic resolvent field](https://www.lmfdb.org/NumberField/3.3.621.1) · [LMFDB entry for the degree-nine field](https://www.lmfdb.org/NumberField/9.3.6466042647.1)
