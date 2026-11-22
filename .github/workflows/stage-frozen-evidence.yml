@@ -1,0 +1,24 @@
+name: Verify released encrypted ResNet20 evidence
+on:
+  push:
+    branches: [resnet20-native-evidence-20261122-private-v1]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Verify the private released assets on a fresh Linux host
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download resnet20-seven-conv-private-preview-1 --repo "$GITHUB_REPOSITORY" --pattern 'resnet20-native-*'
+          sha256sum --check <<'DIGESTS'
+          95f1e648fbc196a3a4e7d6acb2c8c0bd40b97f4a0699af18bc801de079996a77  resnet20-native-study.zip
+          ce58e1265fc04b86890c54065df9a791963a35a326b68135eea1585b50706ec4  resnet20-native-results.pdf
+          DIGESTS
+          unzip -q resnet20-native-study.zip
+          cmp native-stage-study/resnet20-native-results.pdf resnet20-native-results.pdf
+          python3 -B native-stage-study/verify.py
