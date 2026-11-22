@@ -1,0 +1,18 @@
+name: Followup native runner capacity
+on: push
+permissions:
+  contents: read
+jobs:
+  capacity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Probe allocated hardware
+        run: |
+          uname -m
+          lscpu | grep -E 'Architecture|CPU\(s\)|Model name|Hypervisor'
+          nproc
+          cat /sys/fs/cgroup/memory.max
+          cat /sys/fs/cgroup/cpu.max
+          grep -E 'MemTotal|MemAvailable|SwapTotal' /proc/meminfo
+          df -B1 .
