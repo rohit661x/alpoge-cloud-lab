@@ -1,0 +1,5 @@
+{
+  "name": "Private CKKS stage benchmark",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "postCreateCommand": "bash stage-replication/codespace-bootstrap.sh"
+}

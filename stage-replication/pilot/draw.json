@@ -1,0 +1,46 @@
+{
+  "seed": "ckks-seven-stage-heldout-v1:2026-11-22",
+  "selection": "8 smallest SHA256(seed|class/index), index 0001..0999; exclude 0000 for every class",
+  "images": [
+    {
+      "image": "truck-0599",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/truck/0599.jpg",
+      "sha256": "6b2b1be9c76665359141735dff92f41889475991e5b64413e642a0f8830179bd"
+    },
+    {
+      "image": "bird-0570",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/bird/0570.jpg",
+      "sha256": "e8f108981d645dcd1f8e1eca672769c009aebb4a25157c3606060d1b063b4dc1"
+    },
+    {
+      "image": "truck-0208",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/truck/0208.jpg",
+      "sha256": "7c51e3cac5c9be2620119e958ff47389e0cbfdc7257db725683ce9c8d31ef332"
+    },
+    {
+      "image": "ship-0987",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/ship/0987.jpg",
+      "sha256": "61dc99b28a7a36b37ef8b115c8f3bb237574fbc789718ea22015c2fc7fabb682"
+    },
+    {
+      "image": "bird-0200",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/bird/0200.jpg",
+      "sha256": "3dd541342bc4cd9e427a904e34098df0330debb6e6067573c3de2d32fda477f0"
+    },
+    {
+      "image": "truck-0500",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/truck/0500.jpg",
+      "sha256": "fa16727406b1b73e0202966c687a8585daf2982e3a451de15a47c51bdc0176c0"
+    },
+    {
+      "image": "dog-0550",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/dog/0550.jpg",
+      "sha256": "738205dc4a6b1d15fbdd2fdba9281963e4e3b66869f8beac33b4d471d3eadafa"
+    },
+    {
+      "image": "bird-0799",
+      "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/bird/0799.jpg",
+      "sha256": "8dd8e2f6df4cd9d7908dd4aed0d4672f67278bf711237bed3e8d210a25fa4a84"
+    }
+  ]
+}
