@@ -1,0 +1,29 @@
+name: Recompute frozen plaintext oracles on native x86
+on:
+  push:
+    branches: [resnet-followup-reference-20261122]
+permissions:
+  contents: read
+jobs:
+  oracle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build and evaluate 16 fresh plaintext references
+        run: |
+          uname -m
+          g++ --version
+          git init -q upstream
+          git -C upstream fetch -q --depth 1 https://github.com/lorenzorovida/LowMemoryFHEResNet20.git c818bd3519794191dfcf78c252bc209ee30e3e4a
+          git -C upstream checkout -q --detach FETCH_HEAD
+          g++ -std=c++17 -O3 -Iupstream/src stage-replication/pack.cpp -o pack
+          g++ -std=c++17 -O3 stage-replication/reference.cpp -o reference
+          python3 stage-replication/reference-run.py upstream refs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heldout-clear-x86-refs
+          path: refs/
+          retention-days: 3
