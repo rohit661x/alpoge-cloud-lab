@@ -7,6 +7,7 @@ case "$(lean --version)" in
   *) echo "This archive requires Lean 4.33.1." >&2; exit 1 ;;
 esac
 export MATHLIB_CACHE_DIR="${MATHLIB_CACHE_DIR:-$(pwd)/.lake/mathlib-cache}"
+python3 -B shallow_deps.py
 lake exe cache get Mathlib
 lake build Formalism.ThetaLiftIndependence.ThetaOrbitSums.OrbitSum
-lake env lean Bridge.lean
+sh check-instance.sh

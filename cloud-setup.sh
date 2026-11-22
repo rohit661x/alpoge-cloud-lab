@@ -61,6 +61,6 @@ if [[ "$stage" == bridge ]]; then
   python3 -B shallow_deps.py
   lake exe cache get Mathlib
   lake build Formalism.ThetaLiftIndependence.ThetaOrbitSums.OrbitSum
-  lake env lean Bridge.lean
+  sh check-instance.sh
   echo "Lean checked the specialization of the archive's orbitSum theorem."
 fi

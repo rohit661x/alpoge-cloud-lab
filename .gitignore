@@ -4,6 +4,8 @@ __pycache__/
 *.olean
 *.ilean
 evidence/
+lean-bridge/GaussianData.lean
+lean-bridge/GaussianShell.lean
 lean-bridge/src/
 lean-bridge/lake-manifest.json
 lean-bridge/lakefile.toml
