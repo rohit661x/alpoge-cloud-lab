@@ -38,6 +38,7 @@ private.mkdir(parents=True,exist_ok=False)
 cwd=private/'run';cwd.mkdir()
 (private/'weights').symlink_to(build/'app/weights')
 keydir=private/f'stage-keys-p{p}'
+cache_maps=shutil.disk_usage(private).free>55*1024**3
 env=dict(os.environ,MALLOC_ARENA_MAX='2',OMP_NUM_THREADS='4',OMP_DYNAMIC='FALSE',OMP_MAX_ACTIVE_LEVELS='1',STAGE_PROFILE=str(p),LD_LIBRARY_PATH=str(build/'install/lib'))
 exe=dict(old8=build/'arms/old8/stage_ninth',old9=build/'arms/old9/stage_ninth',new8=build/'arms/parents/stage_ninth',new9=build/'arms/parents/stage_ninth',common11=build/'arms/common11/stage_portable')
 index=params.image_index*4+(key-1)*2+(p-2)
@@ -69,7 +70,7 @@ with manifest.open() as f:
     declared={row['path']:row['sha256'] for row in csv.DictReader(f) if row['path'].startswith('weights/') or row['path']=='src/stb_image.h'}
 assert len(declared)==1016 and all(digest(build/'app'/name)==want for name,want in declared.items())
 snapshot={str(n):digest(path) for n,path in dict(**exe,init=build/'harness/stage_native',pack=build/'pack',reference=build/'reference').items()}
-save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,diagnostics=dict(architecture=os.uname().machine,cpu_info=subprocess.check_output(['lscpu'],text=True),cgroup_memory_limit=(Path('/sys/fs/cgroup/memory.max').read_text().strip()),cgroup_cpu_limit=Path('/sys/fs/cgroup/cpu.max').read_text().strip(),compiler=subprocess.check_output(['g++-12','--version'],text=True).splitlines()[0],allocator='MALLOC_ARENA_MAX=2 for all native processes',weight_manifest_sha256=digest(manifest),verified_weight_files=1015,arm_compile_flags={name:(build/'arms'/name/'CMakeFiles'/('stage_portable.dir' if name=='common11' else 'stage_ninth.dir')/'flags.make').read_text() for name in ['old8','old9','parents','common11']},openfhe_commit=subprocess.check_output(['git','-C',build/'openfhe','rev-parse','HEAD'],text=True).strip(),upstream_commit=subprocess.check_output(['git','-C',build/'app','rev-parse','HEAD'],text=True).strip()),setup_mode='physical keygen without bootstrap matrix precomputation; one pretrimmed map at a time',start=utc()))
+save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,diagnostics=dict(architecture=os.uname().machine,cpu_info=subprocess.check_output(['lscpu'],text=True),cgroup_memory_limit=(Path('/sys/fs/cgroup/memory.max').read_text().strip()),cgroup_cpu_limit=Path('/sys/fs/cgroup/cpu.max').read_text().strip(),compiler=subprocess.check_output(['g++-12','--version'],text=True).splitlines()[0],allocator='MALLOC_ARENA_MAX=2 for all native processes',weight_manifest_sha256=digest(manifest),verified_weight_files=1015,arm_compile_flags={name:(build/'arms'/name/'CMakeFiles'/('stage_portable.dir' if name=='common11' else 'stage_ninth.dir')/'flags.make').read_text() for name in ['old8','old9','parents','common11']},openfhe_commit=subprocess.check_output(['git','-C',build/'openfhe','rev-parse','HEAD'],text=True).strip(),upstream_commit=subprocess.check_output(['git','-C',build/'app','rev-parse','HEAD'],text=True).strip()),cache_all_trimmed_maps=cache_maps,setup_mode='physical keygen without bootstrap matrix precomputation; exact serialized maps',start=utc()))
 try:
     # Earlier full P3 master map serializes to 9.966 GB; keygen omits the
     # transform plaintexts, while the numerical evaluator loads them normally.
@@ -93,8 +94,8 @@ try:
             dest=evidence/label/arm;dest.mkdir(parents=True)
             filename=mapname(arm);map_path=keydir/('rot_'+filename); wanted=expected(arm)
             ee=dict(env,TRIAL_MAP=filename)
-            if active_file!=map_path:
-                if active_file: active_file.unlink()
+            if not map_path.exists():
+                if active_file and not cache_maps: active_file.unlink()
                 run(stage_args(arm,dest),dest/'prepare.log',dict(ee,TRIAL_PREPARE='1'),setup_est)
                 found=sorted(map(int,re.findall(r'actual_index=(\d+)',(dest/'prepare.log').read_text())))
                 assert found==wanted
