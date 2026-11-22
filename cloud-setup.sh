@@ -58,7 +58,8 @@ if [[ "$stage" == bridge ]]; then
   cd "$project_dir/lean-bridge"
   python3 -B fetch_archive.py
   export MATHLIB_CACHE_DIR="$build_dir/mathlib-cache"
-  lake exe cache get
+  python3 -B shallow_deps.py
+  lake exe cache get Mathlib
   lake build Formalism.ThetaLiftIndependence.ThetaOrbitSums.OrbitSum
   lake env lean Bridge.lean
   echo "Lean checked the specialization of the archive's orbitSum theorem."

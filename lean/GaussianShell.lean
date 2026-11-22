@@ -24,13 +24,9 @@ def integerNorm (v : Point) : Int :=
   let (a,b,c,d) := v
   a*a + b*b + c*c + d*d
 
-private theorem cast_abs_square (a : Int) :
-    ((a.natAbs * a.natAbs : Nat) : Int) = a*a := by
-  cases a <;> simp [Int.natAbs, Int.negSucc_eq]
-
 theorem integerNorm_eq (v : Point) : (normSq v : Int) = integerNorm v := by
   obtain ⟨a,b,c,d⟩ := v
-  simp [normSq, integerNorm, Int.natCast_add, cast_abs_square]
+  simp only [normSq, integerNorm, Int.natCast_add, Int.natAbs_mul_self]
 
 abbrev Gaussian := Int × Int
 
@@ -108,12 +104,11 @@ theorem fourth_rotation (v : Point) : rotate (rotate (rotate (rotate v))) = v :=
 
 def coordinates : List Int := [-2, -1, 0, 1, 2]
 
-def box : List Point := do
-  let a ← coordinates
-  let b ← coordinates
-  let c ← coordinates
-  let d ← coordinates
-  pure (a,b,c,d)
+def box : List Point :=
+  coordinates.flatMap fun a =>
+    coordinates.flatMap fun b =>
+      coordinates.flatMap fun c =>
+        coordinates.map fun d => (a,b,c,d)
 
 private theorem small_of_square_le_five (n : Nat) (h : n * n ≤ 5) : n ≤ 2 := by
   by_cases hsmall : n ≤ 2
@@ -140,8 +135,11 @@ theorem norm_five_in_box (v : Point) (h : normSq v = 5) : v ∈ box := by
   have hb := in_coordinates b (by omega)
   have hc := in_coordinates c (by omega)
   have hd := in_coordinates d (by omega)
-  exact List.mem_flatMap.mpr ⟨a, ha, List.mem_flatMap.mpr ⟨b, hb,
-    List.mem_flatMap.mpr ⟨c, hc, List.mem_flatMap.mpr ⟨d, hd, by simp⟩⟩⟩⟩
+  unfold box
+  apply List.mem_flatMap.mpr
+  refine ⟨a, ha, List.mem_flatMap.mpr ?_⟩
+  refine ⟨b, hb, List.mem_flatMap.mpr ?_⟩
+  exact ⟨c, hc, List.mem_map.mpr ⟨d, hd, rfl⟩⟩
 
 set_option maxRecDepth 100000
 set_option maxHeartbeats 4000000

@@ -86,14 +86,17 @@ instance : MulAction FourUnits NormFiveShell where
 theorem four_units_card : Fintype.card FourUnits = 4 := by decide
 theorem norm_five_card : Fintype.card NormFiveShell = 48 := by decide
 
-private theorem fixed_coordinates :
-    ∀ (u : FourUnits) (z w : GaussianCoordinate), norm z + norm w = 5 →
-      turn u z = z → turn u w = w → u = 1 := by decide
+private theorem fixed_coordinate :
+    ∀ (u : FourUnits) (z : GaussianCoordinate), turn u z = z → u = 1 ∨ norm z = 0 := by
+  decide
 
-theorem free_on_norm_five (u : FourUnits) (v : NormFiveShell) (h : u • v = v) : u = 1 :=
-  fixed_coordinates u v.val.1 v.val.2 v.property
-    (congrArg (fun p : NormFiveShell => p.val.1) h)
-    (congrArg (fun p : NormFiveShell => p.val.2) h)
+theorem free_on_norm_five (u : FourUnits) (v : NormFiveShell) (h : u • v = v) : u = 1 := by
+  rcases fixed_coordinate u v.val.1 (congrArg (fun p : NormFiveShell => p.val.1) h) with hu | hz
+  · exact hu
+  rcases fixed_coordinate u v.val.2 (congrArg (fun p : NormFiveShell => p.val.2) h) with hu | hw
+  · exact hu
+  have hv := v.property
+  omega
 
 theorem stabilizer_card_one (v : NormFiveShell) :
     Nat.card (MulAction.stabilizer FourUnits v) = 1 := by
