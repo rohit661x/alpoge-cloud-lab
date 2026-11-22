@@ -1,0 +1,57 @@
+name: BFV stencil x86 replay
+on:
+  push:
+    branches: [stencil-replay-20261122-private-v1]
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record environment and verify combinatorial schedules
+        run: |
+          set -euo pipefail
+          mkdir x86
+          {
+            uname -smr
+            sed -n 's/^PRETTY_NAME=//p' /etc/os-release
+            lscpu | grep -E '^(Architecture|CPU\(s\)|Model name|Thread\(s\) per core|Hypervisor vendor):'
+            c++ --version | head -1
+            cmake --version | head -1
+            python3 --version
+          } > x86/host.txt
+          python3 -B math/verify.py > x86/verify.txt
+          git diff --exit-code -- math/certificate.json
+          c++ -O2 -std=c++17 independent/check.cpp -o "$RUNNER_TEMP/parent"
+          c++ -O2 -std=c++17 prufer/trees.cpp -o "$RUNNER_TEMP/prufer"
+          "$RUNNER_TEMP/parent" > x86/parents.csv
+          "$RUNNER_TEMP/prufer" > x86/prufer.csv
+          diff <(cut -d, -f1-4 x86/parents.csv) <(cut -d, -f1-4 x86/prufer.csv)
+      - name: Build pinned SEAL
+        run: |
+          set -euo pipefail
+          git init "$RUNNER_TEMP/seal"
+          git -C "$RUNNER_TEMP/seal" fetch --quiet --depth=1 https://github.com/microsoft/SEAL.git ce53aa40969364f79599009bc8882f71fce0c13d
+          git -C "$RUNNER_TEMP/seal" checkout --quiet --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/seal" rev-parse HEAD)" = ce53aa40969364f79599009bc8882f71fce0c13d
+          cmake -S "$RUNNER_TEMP/seal" -B "$RUNNER_TEMP/build" -DCMAKE_BUILD_TYPE=Release -DSEAL_BUILD_DEPS=OFF -DSEAL_USE_MSGSL=OFF -DSEAL_USE_INTEL_HEXL=OFF -DSEAL_USE_ZLIB=OFF -DSEAL_USE_ZSTD=OFF -DSEAL_BUILD_TESTS=OFF -DSEAL_BUILD_EXAMPLES=OFF -DSEAL_BUILD_BENCH=OFF
+          cmake --build "$RUNNER_TEMP/build" --parallel 2
+      - name: Replay native and grouped checks
+        run: |
+          set -euo pipefail
+          sh grouped/replay.sh "$RUNNER_TEMP/seal" "$RUNNER_TEMP/build" > x86/grouped.txt
+          sh native/replay.sh "$RUNNER_TEMP/seal" "$RUNNER_TEMP/build" 4.7.2 > x86/native.csv
+      - name: Replay grouped-hoisting process plan
+        run: |
+          set -euo pipefail
+          sh hoisted/replay.sh "$RUNNER_TEMP/seal" "$RUNNER_TEMP/build" x86/hoisted > x86/hoisted-summary.csv
+          (cd x86 && find . -type f -print0 | sort -z | xargs -0 sha256sum > ../SUMS && mv ../SUMS SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stencil-x86-shareable
+          path: x86/
+          if-no-files-found: error
