@@ -38,7 +38,7 @@ private.mkdir(parents=True,exist_ok=False)
 cwd=private/'run';cwd.mkdir()
 (private/'weights').symlink_to(build/'app/weights')
 keydir=private/f'stage-keys-p{p}'
-env=dict(os.environ,OMP_NUM_THREADS='4',OMP_DYNAMIC='FALSE',OMP_MAX_ACTIVE_LEVELS='1',STAGE_PROFILE=str(p),LD_LIBRARY_PATH=str(build/'install/lib'))
+env=dict(os.environ,MALLOC_ARENA_MAX='2',OMP_NUM_THREADS='4',OMP_DYNAMIC='FALSE',OMP_MAX_ACTIVE_LEVELS='1',STAGE_PROFILE=str(p),LD_LIBRARY_PATH=str(build/'install/lib'))
 exe=dict(old8=build/'arms/old8/stage_ninth',old9=build/'arms/old9/stage_ninth',new8=build/'arms/parents/stage_ninth',new9=build/'arms/parents/stage_ninth',common11=build/'arms/common11/stage_portable')
 index=params.image_index*4+(key-1)*2+(p-2)
 orders=[order(index,i) for i in range(params.timed_rounds+1)]
@@ -65,7 +65,7 @@ ref.mkdir()
 subprocess.run([build/'pack',photo,ref/'input.f64'],check=True)
 subprocess.run([build/'reference',build/'app/weights',ref/'input.f64',str({2:200,3:119}[p]),ref/'stage'],check=True)
 snapshot={str(n):digest(path) for n,path in dict(**exe,init=build/'harness/stage_native',pack=build/'pack',reference=build/'reference').items()}
-save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,setup_mode='physical keygen without bootstrap matrix precomputation; one pretrimmed map at a time',start=utc()))
+save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,diagnostics=dict(architecture=os.uname().machine,cpu_info=subprocess.check_output(['lscpu'],text=True),cgroup_memory_limit=(Path('/sys/fs/cgroup/memory.max').read_text().strip()),cgroup_cpu_limit=Path('/sys/fs/cgroup/cpu.max').read_text().strip(),compiler=subprocess.check_output(['g++-12','--version'],text=True).splitlines()[0],allocator='MALLOC_ARENA_MAX=2 for all native processes',arm_compile_flags={name:(build/'arms'/name/'CMakeFiles'/('stage_portable.dir' if name=='common11' else 'stage_ninth.dir')/'flags.make').read_text() for name in ['old8','old9','parents','common11']},openfhe_commit=subprocess.check_output(['git','-C',build/'openfhe','rev-parse','HEAD'],text=True).strip(),upstream_commit=subprocess.check_output(['git','-C',build/'app','rev-parse','HEAD'],text=True).strip()),setup_mode='physical keygen without bootstrap matrix precomputation; one pretrimmed map at a time',start=utc()))
 try:
     # Earlier full P3 master map serializes to 9.966 GB; keygen omits the
     # transform plaintexts, while the numerical evaluator loads them normally.
