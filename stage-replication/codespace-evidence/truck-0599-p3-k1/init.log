@@ -1,0 +1,10 @@
+
+Ciphertexts depth: 27, available multiplications: 8
+Context built, generating keys...
+Generated.
+Now serializing keys ...
+EvalMult keys have been serialized
+Crypto Context have been serialized
+Public Key has been serialized
+Secret Key has been serialized
+initialized ring_dim=65536 slots=16384 master_keys=88 peak_rss_bytes=10383097856
