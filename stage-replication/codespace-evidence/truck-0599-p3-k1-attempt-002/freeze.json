@@ -1,0 +1,95 @@
+{
+  "block": "truck-0599-p3-k1",
+  "image": {
+    "image": "truck-0599",
+    "url": "https://raw.githubusercontent.com/YoongiKim/CIFAR-10-images/d7d05618061fe37d830fb0419063d113c575ccbc/test/truck/0599.jpg",
+    "sha256": "6b2b1be9c76665359141735dff92f41889475991e5b64413e642a0f8830179bd"
+  },
+  "profile": 3,
+  "key": 1,
+  "threads": 4,
+  "orders": [
+    [
+      "new9",
+      "old8",
+      "new8",
+      "old9",
+      "common11"
+    ],
+    [
+      "old9",
+      "common11",
+      "old8",
+      "new8",
+      "new9"
+    ],
+    [
+      "common11",
+      "new8",
+      "old9",
+      "new9",
+      "old8"
+    ],
+    [
+      "old8",
+      "old9",
+      "new9",
+      "common11",
+      "new8"
+    ],
+    [
+      "new8",
+      "new9",
+      "common11",
+      "old8",
+      "old9"
+    ],
+    [
+      "new9",
+      "old8",
+      "new8",
+      "old9",
+      "common11"
+    ]
+  ],
+  "binaries": {
+    "old8": "14e8897043df8290577616ad0b3d03c57f3a0763eaa5e5734d53ca07c34c8b7c",
+    "old9": "ea042b2408a02a5a500f08f5c917901337f05986fdf3ca4d6ce43b580bcdbe80",
+    "new8": "1e90aaeb49fba5b8e66ff2ab98b219040ed6a2259414abbf27dbce702a6110d2",
+    "new9": "1e90aaeb49fba5b8e66ff2ab98b219040ed6a2259414abbf27dbce702a6110d2",
+    "common11": "2535e1977a54cbbc19efbb4ee0a3836ab061d52429cf72fee89acea2b8676081",
+    "init": "02446b46807e1ca197b50bc7f168eb72714d4b756f42fa48121674ee6fb99675",
+    "pack": "4a05da85f7359bb5ac6fc085af8dae25385fb972f44d37b4b914f90590ec7ef8",
+    "reference": "cfe472294241484849550eaf5573f74be583bc6df0556892ce640ebd076e955c"
+  },
+  "source_commit": "bbb4ea902187823b31a8106e3f0dcf014ddc9465",
+  "primary_ratio_threshold": 0.98,
+  "checkpoint_rmse_gate": 0.01,
+  "checkpoint_max_abs_gate": 0.05,
+  "diagnostics": {
+    "architecture": "x86_64",
+    "cpu_info": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.86\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: Clear CPU buffers attempted, no microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+    "cgroup_memory_limit": "max",
+    "cgroup_cpu_limit": "max 100000",
+    "compiler": "g++-12 (Ubuntu 12.4.0-2ubuntu1~24.04.1) 12.4.0",
+    "allocator": {
+      "MALLOC_ARENA_MAX": "1",
+      "MALLOC_MMAP_THRESHOLD_": "65536",
+      "MALLOC_TRIM_THRESHOLD_": "0"
+    },
+    "attempt": 2,
+    "weight_manifest_sha256": "08fb15da41e1e38771707c0a63518529956f84c00bfc5d05f3c099578bcc0c13",
+    "verified_weight_files": 1015,
+    "arm_compile_flags": {
+      "old8": "# CMAKE generated file: DO NOT EDIT!\n# Generated by \"Unix Makefiles\" Generator, CMake Version 3.28\n\n# compile CXX with /usr/bin/g++-12\nCXX_DEFINES = \n\nCXX_INCLUDES = -I/tmp/stage-native/app/src -I/tmp/stage-native/install/include/openfhe -I/tmp/stage-native/install/include/openfhe/third-party/include -I/tmp/stage-native/install/include/openfhe/core -I/tmp/stage-native/install/include/openfhe/pke -I/tmp/stage-native/install/include/openfhe/binfhe\n\nCXX_FLAGS =   -Wall -Werror -O3  -DOPENFHE_VERSION=1.0.4 -Wno-parentheses -DMATHBACKEND=4 -fopenmp -fopenmp -O3 -DNDEBUG -std=gnu++17\n\n",
+      "old9": "# CMAKE generated file: DO NOT EDIT!\n# Generated by \"Unix Makefiles\" Generator, CMake Version 3.28\n\n# compile CXX with /usr/bin/g++-12\nCXX_DEFINES = \n\nCXX_INCLUDES = -I/tmp/stage-native/app/src -I/tmp/stage-native/install/include/openfhe -I/tmp/stage-native/install/include/openfhe/third-party/include -I/tmp/stage-native/install/include/openfhe/core -I/tmp/stage-native/install/include/openfhe/pke -I/tmp/stage-native/install/include/openfhe/binfhe\n\nCXX_FLAGS =   -Wall -Werror -O3  -DOPENFHE_VERSION=1.0.4 -Wno-parentheses -DMATHBACKEND=4 -fopenmp -fopenmp -O3 -DNDEBUG -std=gnu++17\n\n",
+      "parents": "# CMAKE generated file: DO NOT EDIT!\n# Generated by \"Unix Makefiles\" Generator, CMake Version 3.28\n\n# compile CXX with /usr/bin/g++-12\nCXX_DEFINES = \n\nCXX_INCLUDES = -I/tmp/stage-native/app/src -I/tmp/stage-native/install/include/openfhe -I/tmp/stage-native/install/include/openfhe/third-party/include -I/tmp/stage-native/install/include/openfhe/core -I/tmp/stage-native/install/include/openfhe/pke -I/tmp/stage-native/install/include/openfhe/binfhe\n\nCXX_FLAGS =   -Wall -Werror -O3  -DOPENFHE_VERSION=1.0.4 -Wno-parentheses -DMATHBACKEND=4 -fopenmp -fopenmp -O3 -DNDEBUG -std=gnu++17\n\n",
+      "common11": "# CMAKE generated file: DO NOT EDIT!\n# Generated by \"Unix Makefiles\" Generator, CMake Version 3.28\n\n# compile CXX with /usr/bin/g++-12\nCXX_DEFINES = \n\nCXX_INCLUDES = -I/tmp/stage-native/app/src -I/tmp/stage-native/install/include/openfhe -I/tmp/stage-native/install/include/openfhe/third-party/include -I/tmp/stage-native/install/include/openfhe/core -I/tmp/stage-native/install/include/openfhe/pke -I/tmp/stage-native/install/include/openfhe/binfhe\n\nCXX_FLAGS =   -Wall -Werror -O3  -DOPENFHE_VERSION=1.0.4 -Wno-parentheses -DMATHBACKEND=4 -fopenmp -fopenmp -O3 -DNDEBUG -std=gnu++17\n\n"
+    },
+    "openfhe_commit": "a7415334b8fc033501809d9547be92fb90228c0a",
+    "upstream_commit": "c818bd3519794191dfcf78c252bc209ee30e3e4a"
+  },
+  "cache_all_trimmed_maps": true,
+  "setup_mode": "physical keygen without bootstrap matrix precomputation; exact serialized maps",
+  "start": "2026-11-22T21:30:52.794448+00:00"
+}
