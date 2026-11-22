@@ -1,35 +1,11 @@
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-ciphertext.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-privatekey.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/binfhe-constants.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/binfhecontext.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-cryptoparameters.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-pke.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-keyswitchkey.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-acc-cggi.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-evalkey.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/README.md
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/binfhecontext-ser.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rlwe-ciphertext.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-acckey.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-privatekey-fwd.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-keyswitchkey-fwd.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/lwe-ciphertext-fwd.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-cryptoparameters.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-acc-dm.h
--- Installing: /tmp/stage-native/install/include/openfhe/binfhe/rgsw-acc.h
--- The CXX compiler identification is GNU 12.4.0
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /usr/bin/g++-12 - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
-CMake Error at /usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
-  Could NOT find Python3 (missing: Python3_EXECUTABLE Interpreter)
-Call Stack (most recent call first):
-  /usr/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake:600 (_FPHSA_FAILURE_MESSAGE)
-  /usr/share/cmake-3.28/Modules/FindPython/Support.cmake:3862 (find_package_handle_standard_args)
-  /usr/share/cmake-3.28/Modules/FindPython3.cmake:545 (include)
-  CMakeLists.txt:6 (find_package)
-
-
--- Configuring incomplete, errors occurred!
+Sun Nov 22 09:22:20 PM UTC 2026
+02446b46807e1ca197b50bc7f168eb72714d4b756f42fa48121674ee6fb99675  /tmp/stage-native/harness/stage_native
+14e8897043df8290577616ad0b3d03c57f3a0763eaa5e5734d53ca07c34c8b7c  /tmp/stage-native/arms/old8/stage_ninth
+ea042b2408a02a5a500f08f5c917901337f05986fdf3ca4d6ce43b580bcdbe80  /tmp/stage-native/arms/old9/stage_ninth
+1e90aaeb49fba5b8e66ff2ab98b219040ed6a2259414abbf27dbce702a6110d2  /tmp/stage-native/arms/parents/stage_ninth
+2535e1977a54cbbc19efbb4ee0a3836ab061d52429cf72fee89acea2b8676081  /tmp/stage-native/arms/common11/stage_portable
+4a05da85f7359bb5ac6fc085af8dae25385fb972f44d37b4b914f90590ec7ef8  /tmp/stage-native/pack
+cfe472294241484849550eaf5573f74be583bc6df0556892ce640ebd076e955c  /tmp/stage-native/reference
+Filesystem        1B-blocks       Used    Available Use% Mounted on
+/dev/loop4      33636024320 1201291264  30699978752   4% /workspaces
+/dev/sda1      126225022976 5512740864 114253160448   5% /tmp
