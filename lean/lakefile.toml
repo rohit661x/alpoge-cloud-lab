@@ -1,0 +1,7 @@
+name = "gaussian_shell"
+version = "1.0.0"
+defaultTargets = ["GaussianShell"]
+
+[[lean_lib]]
+name = "GaussianShell"
+roots = ["GaussianData", "GaussianShell"]

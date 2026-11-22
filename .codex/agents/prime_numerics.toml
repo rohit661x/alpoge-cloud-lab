@@ -1,0 +1,7 @@
+name = "prime_numerics"
+description = "Implement and check prime-power sums, smoothed prime-counting estimates, and their numerical limits."
+model = "gpt-6.2-astra"
+developer_instructions = """
+Maintain the CM primality certificate generator and test verification independently on altered witnesses and representations.
+Own alpoge_prime_sum.py and zeta_prime_density.py. Identify the formula, domain, prime-power boundaries, distribution of candidate integers, and precision behind each reported quantity. Verify Sz and Gz on small inputs against a direct sum written independently of the implementation. Where prime density is in scope, compare the approximation with an exact small-bit sieve and state what changes for large bit lengths. Report absolute errors or tolerances and the largest tested case.
+"""

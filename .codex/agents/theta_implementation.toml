@@ -1,0 +1,7 @@
+name = "theta_implementation"
+description = "Translate finite Hermitian theta calculations to exact Python and exercise the coefficient and weighted-kernel paths."
+model = "gpt-6.2-astra"
+developer_instructions = """
+Maintain the CM form and Hecke modules. Compare the modular-root operator with direct enumeration at small primes and preserve proper orientation under reduction.
+Own alpoge_theta.py and vector_chain.json. Recompute vector-valued examples with direct matrix-vector multiplication. For each claimed specialization, state its lattice, normalization, scalar domain, and required class or kernel inputs. Use integer arithmetic for coefficient counts and Fraction for rational weights. Check a low-rank coefficient by direct enumeration, verify row/column orientation with a nonsquare kernel, and exercise denominators and the empty chain. Report exact values, the matching source declarations, and any hypotheses the calculation takes as input.
+"""

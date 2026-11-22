@@ -1,0 +1,10 @@
+.alpoge-build/
+.lake/
+__pycache__/
+*.olean
+*.ilean
+evidence/
+lean-bridge/src/
+lean-bridge/lake-manifest.json
+lean-bridge/lakefile.toml
+lean-bridge/lean-toolchain

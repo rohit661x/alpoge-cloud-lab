@@ -1,0 +1,44 @@
+name: Gaussian lattice verification
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and extract the original project ZIP
+        run: |
+          echo "0a64dd290eaae88fe5a82115867e5dcec69d650b9bc6a08438388497e75fa922  inputs/alpoge-lab.zip" | sha256sum -c
+          unzip -q inputs/alpoge-lab.zip -d "$RUNNER_TEMP/original"
+          cd "$RUNNER_TEMP/original/alpoge-lab"
+          python3 -B -m unittest -v
+          python3 -B zeta_prime_density.py cm certified cm_prime_1024.json
+      - name: Generate the rank-changing embedding data and check in Lean
+        run: |
+          mkdir -p evidence
+          set -o pipefail
+          bash cloud-setup.sh core 2>&1 | tee evidence/core.log
+          cp .alpoge-build/norm-five.json .alpoge-build/cm-verified.json evidence/
+      - name: Build the pinned archive lemma and its specialization
+        run: |
+          set -euo pipefail
+          export PATH="$PWD/.alpoge-build/lean-4.33.1-linux/bin:$PATH"
+          export MATHLIB_CACHE_DIR="$RUNNER_TEMP/mathlib-cache"
+          cd lean-bridge
+          python3 -B fetch_archive.py
+          lake exe cache get
+          lake build Formalism.ThetaLiftIndependence.ThetaOrbitSums.OrbitSum
+          lake env lean Bridge.lean 2>&1 | tee ../evidence/bridge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gaussian-verification
+          path: evidence/
+          if-no-files-found: ignore
