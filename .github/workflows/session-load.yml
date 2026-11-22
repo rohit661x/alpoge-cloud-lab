@@ -1,4 +1,4 @@
-name: BFV server key loading
+name: BFV matched key loading and filter banks
 on:
   push:
     branches: [filter-bank-load-20261122-private-v1]
@@ -38,6 +38,12 @@ jobs:
           set -euo pipefail
           SEAL_SOURCE_DIR="$RUNNER_TEMP/seal" SEAL_BUILD_DIR="$RUNNER_TEMP/build" sh decision-load/replay.sh
           cp decision-load/results.csv x86/load.csv
+      - name: Measure filter evaluation and wire bytes on the same host
+        run: |
+          set -euo pipefail
+          sh decision-filters/replay.sh "$RUNNER_TEMP/seal" "$RUNNER_TEMP/build" x86/raw > x86/summary.csv
+          SEAL_SOURCE_DIR="$RUNNER_TEMP/seal" SEAL_BUILD_DIR="$RUNNER_TEMP/build" sh decision-wire/replay.sh "$RUNNER_TEMP/wire-blobs"
+          cp decision-wire/results.csv x86/wire.csv
           (cd x86 && find . -type f -print0 | sort -z | xargs -0 sha256sum > ../SUMS && mv ../SUMS SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
