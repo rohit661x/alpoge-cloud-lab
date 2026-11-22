@@ -34,9 +34,20 @@ private theorem weight_invariant :
     ∀ (f : Bool) (t : Assignment) (a : Scalars) (x : Assignment),
       weight f t (a • x) = weight f t x := by decide
 
-theorem plain_sum :
-    ∀ (f : Bool) (t : Assignment),
-      (∑ x : Assignment, weight f t x) = (if t.1 = t.2 then 3 else 0) := by decide
+private def natWeight (f : Bool) (t x : Assignment) : Nat :=
+  if frobenius f t x = x then 1 else 0
+
+private theorem nat_sum : ∀ (f : Bool) (t : Assignment),
+    (∑ x : Assignment, natWeight f t x) = (if t.1 = t.2 then 3 else 0) := by decide
+
+private theorem weight_eq_cast (f : Bool) (t x : Assignment) :
+    weight f t x = (natWeight f t x : ℚ) := by
+  by_cases h : frobenius f t x = x <;> simp [natWeight, weight, h]
+
+theorem plain_sum (f : Bool) (t : Assignment) :
+    (∑ x : Assignment, weight f t x) = (if t.1 = t.2 then 3 else 0) := by
+  simp only [weight_eq_cast, ← Nat.cast_sum, nat_sum]
+  by_cases h : t.1 = t.2 <;> norm_num [h]
 
 theorem fixed_orbit_mass (f : Bool) (t : Assignment) :
     (∑ᶠ o : MulAction.orbitRel.Quotient Scalars Assignment,
