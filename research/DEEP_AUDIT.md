@@ -14,6 +14,14 @@ The degree-nine number field and its order-108 Galois group are already catalogu
 
 The exhaustive count through one million is **4,369 cube cases and 8,708 noncube cases** among 13,077 eligible primes. The distinction between the finite count and the limiting density follows from the proof above. Primes up to 10,000 were well within the range of earlier Perrin period calculations. [Prior-art audit](PRIOR_AUDIT.md)
 
+Given a square root d of −23, the cube test reduces further to one ordinary modular power: ((3+d)/2)^((p−1)/3) = 1 in Fₚ. Either sign of d gives the same decision. The same test works on the classical Perrin I-signature entry P(p−1). [Derivation](CARDANO.md)
+
+## A direct application of the Dirichlet-GRH statement
+
+The verified theorem for Dirichlet L-functions supplies the critical-line hypothesis for the zeta function of the biquadratic field Q(√−3,√−23). Applied through Grenié and Molteni's explicit Chebotarev bound, it guarantees more than 2.7 × 10³⁹ primes in (2²⁵⁶−2¹⁴²,2²⁵⁶] where the trace polynomial has exactly one root. This prime class is different from the eligible norm-one cube class above. The archive’s orbit-sum theorem is also applied directly by the Lean bridge to the nine cube-root assignments. [Exact interval proof](TRACE_WINDOW.md) · [Fixed-prefix prime-search proof](PREFIX_PROOF.md)
+
+We exhibit an individual prime p=2²⁵⁶−255·2¹²⁸+1 in that window, with a certified primitive 2¹²⁸-th root of unity and a reproducible NTT convolution. [Parameter and primality proof](TRANSFORM_FIELD.md)
+
 ## Exact period over a second public field
 
 Over the Curve25519 base prime p=2²⁵⁵−19, all three roots of X³−X−1 lie in the base field. In increasing order of residue, they have orders p−1, (p−1)/3, and (p−1)/2. The first is a primitive element. The scalar Perrin recurrence consequently has period **2²⁵⁵−20**, attaining the largest possible period in this separable split case. The verification covers arithmetic in the public base field. [Root values, prime certificates and period proof](CURVE25519_PERIOD.md)

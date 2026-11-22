@@ -37,6 +37,8 @@ jobs:
           timeout 180 lean lean/GoldilocksOrder.lean 2>&1 | tee crypto-evidence/lean-order.log
           timeout 180 lean lean/Curve25519Period.lean 2>&1 | tee crypto-evidence/lean-curve.log
           timeout 180 lean lean/TraceAction.lean 2>&1 | tee crypto-evidence/lean-action.log
+          timeout 180 lean lean/PrefixArithmetic.lean 2>&1 | tee crypto-evidence/lean-prefix.log
+          timeout 180 lean lean/TransformPrime.lean 2>&1 | tee crypto-evidence/lean-transform.log
           if grep -q 'sorryAx' crypto-evidence/lean-*.log; then exit 1; fi
       - uses: actions/upload-artifact@v4
         with:
@@ -82,6 +84,21 @@ jobs:
           gzip -n -c "$RUNNER_TEMP/pari-rows.jsonl" > deep-evidence/pari-rows.jsonl.gz
           python3 -B galois_census.py deep-evidence/pari-rows.jsonl.gz > deep-evidence/census.json
           python3 -B matrix_periods.py > deep-evidence/exact-periods.json
+          python3 -B rh_trace_window.py > deep-evidence/one-root-window.txt
+          python3 -B rh_prefix.py > deep-evidence/prefix-count.txt
+          python3 -B ntt_fixture.py > deep-evidence/transform-prime.json
+          gp -q -f research/pari_transform.gp > deep-evidence/transform-pari.json
+          python3 -B - <<'PYTHON'
+          import json
+          from pathlib import Path
+          from ntt_fixture import OMEGA, P
+          p, omega, order, roots, perrin_roots, larger_primes = json.loads(Path("deep-evidence/transform-pari.json").read_text())
+          if (p, omega, order, len(roots), perrin_roots, larger_primes) != (P, OMEGA, 2**128, 1, [], 0):
+              raise ValueError("PARI disagrees with the Python transform certificate")
+          u = roots[0]
+          if (u**9-18*u**6+54*u**3+27) % P:
+              raise ValueError("trace root fails its defining equation")
+          PYTHON
           python3 -B - <<'PYTHON'
           import json
           from pathlib import Path

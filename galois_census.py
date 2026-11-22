@@ -7,6 +7,8 @@ from itertools import permutations, product
 from math import isqrt
 from pathlib import Path
 
+from cubic_crypto_lab import sqrt_mod
+from cubic_lift import cardano_character
 from cubic_study import power
 from matrix_periods import CURVE, GOLD, ROOTS
 
@@ -83,6 +85,8 @@ def check_file(path, bound):
             key = (p % 3, tuple(f), tuple(q), tuple(h))
             if p != expected or key not in theoretical:
                 raise ValueError(f"unexpected prime or Frobenius action at {p}: {key}")
+            if p > 23 and (h.count(1) == 1) != (p % 3 == 2 and pow(-23,(p-1)//2,p) == 1):
+                raise ValueError(f"biquadratic class disagrees with the one-root condition at {p}")
             actual[key] += 1
             ntt_classes = [k for k in ntt_counts if p % (1 << k) == 1]
             for k in ntt_classes:
@@ -90,6 +94,9 @@ def check_file(path, bound):
             if p % 3 == 1 and f == [3]:
                 eligible += 1
                 is_cube = power((0, 1, 0), (p*p+p+1)//3, p) == (1, 0, 0)
+                scalar = cardano_character(p, sqrt_mod(-23, p))
+                if (scalar == 1) != is_cube:
+                    raise ValueError(f"scalar cubic-residue test disagrees at {p}")
                 if (q.count(1), h.count(1)) != ((3, 3) if is_cube else (0, 0)):
                     raise ValueError(f"degree-three, degree-nine and exponent tests disagree at {p}")
                 cubes += int(is_cube)

@@ -3,6 +3,6 @@ set -eu
 cd "$(dirname "$0")"
 lib=.lake/build/lib/lean
 cp ../lean/GaussianData.lean ../lean/GaussianShell.lean .
-for module in Bridge GaussianData GaussianShell LinkedShell; do
+for module in Bridge GaussianData GaussianShell LinkedShell TraceOrbit; do
   lake env lean -o "$lib/$module.olean" "$module.lean"
 done

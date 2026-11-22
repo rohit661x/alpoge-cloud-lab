@@ -5,6 +5,7 @@ Coordinates and polynomial coefficients are in ascending degree order.
 import argparse
 import json
 
+from cubic_crypto_lab import sqrt_mod
 from cubic_study import power
 from cubic_trace_criterion import F, root_count
 
@@ -19,6 +20,19 @@ def _unity_root(p):
         if zeta != 1 and (zeta*zeta + zeta + 1) % p == 0:
             return zeta
     raise ArithmeticError("failed to find a primitive cube root of unity")
+
+
+def cardano_character(p, square_root):
+    """For an eligible prime and d²=-23, return the cubic character of (3+d)/2.
+
+    Both orientations of d give identity simultaneously. This helper only
+    checks the supplied square root and congruence. The caller establishes
+    primality and irreducibility of the Perrin polynomial.
+    """
+    if p < 7 or p % 3 != 1 or square_root * square_root % p != (-23) % p:
+        raise ValueError("requires p congruent to 1 modulo 3 and a square root of -23")
+    gamma = (3 + square_root) * ((p+1)//2) % p
+    return pow(gamma, (p-1)//3, p)
 
 
 def cubic_lift(p):
@@ -37,9 +51,12 @@ def cubic_lift(p):
     count = root_count(Q, p)
     if character[1:] != (0, 0) or pow(character[0], 3, p) != 1:
         raise ArithmeticError("invalid norm-one cubic character")
+    scalar = cardano_character(p, sqrt_mod(-23, p))
+    if (scalar == 1) != (character == ONE):
+        raise ArithmeticError("base-field Cardano character disagrees with the norm-one character")
     if count != (3 if character == ONE else 0):
         raise ArithmeticError("auxiliary cubic and norm-one character disagree")
-    report = dict(p=p, q_root_count=count, character=character[0],
+    report = dict(p=p, q_root_count=count, character=character[0], cardano_character=scalar,
                   roots=(), traces=(), trace_gcd=(1,))
     if not count:
         return report

@@ -30,3 +30,20 @@ Paste this into a new project chat, replacing the bracketed text with the actual
 - `python3 alpoge_verify.py --help` lists the export and checker prerequisites. To run a full replay with prepared inputs, use `python3 alpoge_verify.py /path/to/challenge.ndjson /path/to/solution.ndjson --checker /path/to/con-leche`. Report a local proof replay only after the pinned exports pass the manifest checks and the checker accepts all required declarations. Distinguish published replay evidence from the result of this run.
 
 Custom role definitions and model precedence follow the [Codex subagent configuration guide](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+
+## Research review and cloud release
+
+The orchestrator coordinates eight Astra role profiles. For a new claim, give the verifier its mathematical statement and input values before sharing the author's computed answer. With four live slots, run the primary session, orchestrator and two specialists first, then reuse the specialist slots for independent review and reproduction.
+
+| Role | Handoff and evidence |
+|---|---|
+| `orchestrator` | Record the conjecture, the required hypotheses and the observable that would disprove it. Reconcile independently obtained results. |
+| `lean_provenance` | Pin source and export versions, identify the imported declaration, inspect its hypotheses and check the compiled specialization. |
+| `theta_implementation` | Connect the finite construction to the archived theta or orbit calculation, including the chosen action and quotient. |
+| `prime_numerics` | Produce exact certificates, input ranges and expected outputs. |
+| `analytic_referee` | Re-derive the inequality from the primary paper and audit every rounding direction. |
+| `finite_field_verifier` | Recompute the order or counting statement in a different representation. |
+| `independent_reviewer` | Challenge the mathematical inference, search for earlier equivalent results, and report which claims survive. |
+| `reproduction_engineer` | Exercise the public entry points in a clean checkout and match the cloud artifacts to the commit. |
+
+The push workflow runs a Lean and Python job in parallel with an independent PARI/GP census. The latter factors three polynomials at every unramified prime through one million. A separate manually dispatched workflow verifies the official compressed and decompressed exports, reads the five declarations and checks the published comparison log. The explicit `alpoge_verify.py` entry point runs the full proof comparison when supplied the two unpacked exports and the matching checker. Every release report identifies which of these took place.
