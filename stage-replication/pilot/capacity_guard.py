@@ -29,8 +29,8 @@ def memory():
 
 def run(command, log, cwd, env, estimate, journal):
     available, swap0 = memory()
-    reserve = 640 * MIB
-    record = dict(command=str(command[0]), estimate_bytes=estimate, available_before=available, swap_before=swap0)
+    reserve = (1792 if env.get('MALLOC_TRIM_THRESHOLD_')=='0' else 640) * MIB
+    record = dict(command=str(command[0]), estimate_bytes=estimate, reserve_bytes=reserve, available_before=available, swap_before=swap0)
     if available < estimate + reserve:
         journal(dict(record, status='admission-rejected'))
         raise RuntimeError(f'capacity admission: {available} available; {estimate} estimate plus {reserve} reserve')

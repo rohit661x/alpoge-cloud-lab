@@ -17,6 +17,7 @@ HERE=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser()
 parser.add_argument('--image-index',type=int,default=0,choices=range(8))
 parser.add_argument('--profile',type=int,choices=[2,3],default=3)
+parser.add_argument('--attempt',type=int,default=1,choices=[1,2])
 parser.add_argument('--key',type=int,choices=[1,2],default=1)
 parser.add_argument('--timed-rounds',type=int,choices=range(1,6),default=5)
 parser.add_argument('--build',type=Path,default=Path('/tmp/stage-native'))
@@ -31,7 +32,7 @@ im=entry['image']; photo=HERE/'fixtures'/(im+'.jpg')
 assert digest(photo)==entry['sha256']
 key=params.key
 block=f'{im}-p{p}-k{key}'
-evidence=params.evidence.resolve()/block
+evidence=params.evidence.resolve()/(block if params.attempt==1 else block+'-attempt-002')
 evidence.mkdir(parents=True,exist_ok=False)
 private=params.private.resolve()/block
 private.mkdir(parents=True,exist_ok=False)
@@ -40,6 +41,8 @@ cwd=private/'run';cwd.mkdir()
 keydir=private/f'stage-keys-p{p}'
 cache_maps=shutil.disk_usage(private).free>55*1024**3
 env=dict(os.environ,MALLOC_ARENA_MAX='2',OMP_NUM_THREADS='4',OMP_DYNAMIC='FALSE',OMP_MAX_ACTIVE_LEVELS='1',STAGE_PROFILE=str(p),LD_LIBRARY_PATH=str(build/'install/lib'))
+if params.attempt==2:
+    env.update(MALLOC_ARENA_MAX='1',MALLOC_MMAP_THRESHOLD_='65536',MALLOC_TRIM_THRESHOLD_='0')
 exe=dict(old8=build/'arms/old8/stage_ninth',old9=build/'arms/old9/stage_ninth',new8=build/'arms/parents/stage_ninth',new9=build/'arms/parents/stage_ninth',common11=build/'arms/common11/stage_portable')
 index=params.image_index*4+(key-1)*2+(p-2)
 orders=[order(index,i) for i in range(params.timed_rounds+1)]
@@ -70,12 +73,16 @@ with manifest.open() as f:
     declared={row['path']:row['sha256'] for row in csv.DictReader(f) if row['path'].startswith('weights/') or row['path']=='src/stb_image.h'}
 assert len(declared)==1016 and all(digest(build/'app'/name)==want for name,want in declared.items())
 snapshot={str(n):digest(path) for n,path in dict(**exe,init=build/'harness/stage_native',pack=build/'pack',reference=build/'reference').items()}
-save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,diagnostics=dict(architecture=os.uname().machine,cpu_info=subprocess.check_output(['lscpu'],text=True),cgroup_memory_limit=(Path('/sys/fs/cgroup/memory.max').read_text().strip()),cgroup_cpu_limit=Path('/sys/fs/cgroup/cpu.max').read_text().strip(),compiler=subprocess.check_output(['g++-12','--version'],text=True).splitlines()[0],allocator='MALLOC_ARENA_MAX=2 for all native processes',weight_manifest_sha256=digest(manifest),verified_weight_files=1015,arm_compile_flags={name:(build/'arms'/name/'CMakeFiles'/('stage_portable.dir' if name=='common11' else 'stage_ninth.dir')/'flags.make').read_text() for name in ['old8','old9','parents','common11']},openfhe_commit=subprocess.check_output(['git','-C',build/'openfhe','rev-parse','HEAD'],text=True).strip(),upstream_commit=subprocess.check_output(['git','-C',build/'app','rev-parse','HEAD'],text=True).strip()),cache_all_trimmed_maps=cache_maps,setup_mode='physical keygen without bootstrap matrix precomputation; exact serialized maps',start=utc()))
+save(evidence/'freeze.json',dict(block=block,image=entry,profile=p,key=key,threads=4,orders=orders,binaries=snapshot,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),primary_ratio_threshold=.98,checkpoint_rmse_gate=.01,checkpoint_max_abs_gate=.05,diagnostics=dict(architecture=os.uname().machine,cpu_info=subprocess.check_output(['lscpu'],text=True),cgroup_memory_limit=(Path('/sys/fs/cgroup/memory.max').read_text().strip()),cgroup_cpu_limit=Path('/sys/fs/cgroup/cpu.max').read_text().strip(),compiler=subprocess.check_output(['g++-12','--version'],text=True).splitlines()[0],allocator={k:env[k] for k in env if k.startswith('MALLOC_')},attempt=params.attempt,weight_manifest_sha256=digest(manifest),verified_weight_files=1015,arm_compile_flags={name:(build/'arms'/name/'CMakeFiles'/('stage_portable.dir' if name=='common11' else 'stage_ninth.dir')/'flags.make').read_text() for name in ['old8','old9','parents','common11']},openfhe_commit=subprocess.check_output(['git','-C',build/'openfhe','rev-parse','HEAD'],text=True).strip(),upstream_commit=subprocess.check_output(['git','-C',build/'app','rev-parse','HEAD'],text=True).strip()),cache_all_trimmed_maps=cache_maps,setup_mode='physical keygen without bootstrap matrix precomputation; exact serialized maps',start=utc()))
 try:
     # Earlier full P3 master map serializes to 9.966 GB; keygen omits the
     # transform plaintexts, while the numerical evaluator loads them normally.
     setup_est={2:12_700_000_000,3:10_500_000_000}[p]
     stage_est={2:16_430_000_000,3:13_670_000_000}[p]
+    if params.attempt==2 and p==3:
+        # The first native attempt reached 12.968 GB. This is a bounded
+        # feasibility retry with a higher host reserve, not a prediction of completion.
+        stage_est=13_100_000_000
     for baseline, expected_size in [(private, {2:24_000_000_000,3:20_100_000_000}[p])]:
         if shutil.disk_usage(baseline).free < expected_size+1024**3:
             raise RuntimeError(f'insufficient disk for original master and one active map: {shutil.disk_usage(baseline).free}')
