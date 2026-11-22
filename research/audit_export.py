@@ -12,7 +12,7 @@ from pathlib import Path
 
 EXPORTS = {
     "challenge": ("c24ef99dab3556a52c7fb886e03cf22a242f3b96f82ae4cc40539e5d2f678ac6",
-                  350862970, "bd484ac9886a96f26b1d9a7a59ebd45b7a70d102c015d4f31f9302bbdd6ab2b9"),
+                  350862311, "bd484ac9886a96f26b1d9a7a59ebd45b7a70d102c015d4f31f9302bbdd6ab2b9"),
     "solution": ("61a8938ad5f5e57397c1c0e3b954916af546d9004ade01c3555744a681b05381",
                  61570595788, "5ea74b912147c5c93cc2b6d70cc727cf908df2f62ac6a20480a3fa02f6be244e"),
 }
@@ -46,19 +46,19 @@ def inspect_targets(stream, h, background):
             s = record.get("str", {})
             if s.get("str") in TARGETS and s.get("pre") == 0:
                 name_ids[record["in"]] = s["str"]
-        elif line.startswith(b'{"axiom":'):
-            record = json.loads(line)["axiom"]
+        elif line.startswith(b'{"thm":'):
+            record = json.loads(line)["thm"]
             name = name_ids.get(record["name"])
             if name:
-                if name in axioms or record["isUnsafe"] or record["levelParams"]:
+                if name in axioms or record["all"] != [record["name"]] or record["levelParams"]:
                     raise ValueError(f"unexpected declaration: {name}")
-                axioms[name] = record["type"]
+                axioms[name] = {k: record[k] for k in ("name", "type", "value")}
                 retain = False
         if retain and background is not None:
             background.write(line)
     if set(axioms) != TARGETS or metadata["lean"]["githash"] != LEAN:
         raise ValueError("challenge target or metadata mismatch")
-    return sizes, {"lean_export": metadata, "challenge_axiom_type_ids": axioms}
+    return sizes, {"lean_export": metadata, "challenge_theorem_records": axioms}
 
 def audit(kind, path, log, background=None):
     compressed, expected_size, expected_raw = EXPORTS[kind]
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     parser.add_argument("archive", type=Path)
     parser.add_argument("published_comparison_log", nargs="?", type=Path)
     parser.add_argument("--write-background", type=Path,
-                        help="write challenge records other than the five target axioms")
+                        help="write challenge records other than the five target theorem records")
     args = parser.parse_args()
     if args.write_background and args.kind != "challenge":
         parser.error("--write-background requires a challenge")

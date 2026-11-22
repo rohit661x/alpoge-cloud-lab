@@ -26,7 +26,8 @@ import subprocess
 
 
 # https://math.mit.edu/~drew/grh/SHA256SUMS (21 November 2026)
-CHALLENGE = (350862970, "bd484ac9886a96f26b1d9a7a59ebd45b7a70d102c015d4f31f9302bbdd6ab2b9")
+# Measured on the digest-matching raw export; the published prose size is 659 bytes larger.
+CHALLENGE = (350862311, "bd484ac9886a96f26b1d9a7a59ebd45b7a70d102c015d4f31f9302bbdd6ab2b9")
 SOLUTION = (61570595788, "5ea74b912147c5c93cc2b6d70cc727cf908df2f62ac6a20480a3fa02f6be244e")
 THEOREMS = (
     "riemannHypothesis",
