@@ -102,7 +102,10 @@ void run(FHEController& ctl, Ctxt input, const fs::path& out, const std::string&
     if (fs::exists(out/"metrics.csv")) throw std::runtime_error("metrics.csv already exists");
     const auto load_start=Clock::now();
     if (!std::getenv("TRIAL_MAP")) throw std::runtime_error("TRIAL_MAP required");
-    ctl.load_bootstrapping_and_rotation_keys(std::getenv("TRIAL_PREPARE") ? "master.bin" : std::getenv("TRIAL_MAP"),slots,false);
+    if (std::getenv("TRIAL_PREPARE"))
+        ctl.load_rotation_keys("master.bin",false);
+    else
+        ctl.load_bootstrapping_and_rotation_keys(std::getenv("TRIAL_MAP"),slots,false);
     prepare_keys(ctl,input,fs::path("..")/ctl.parameters_folder,arm);
     if (std::getenv("TRIAL_PREPARE")) return;
     double load_sec=elapsed(load_start);

@@ -1,5 +1,6 @@
 #include "FHEController.h"
 #include "stage_plan.hpp"
+#include "scheme/ckksrns/ckksrns-utils.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <cstdlib>
@@ -70,8 +71,20 @@ void initialize(FHEController& ctl, Profile p, const fs::path& dir, const char* 
         throw std::runtime_error("failed to serialize input");
     pixels.resize(slots);
     write_vector(dir/"input.f64", pixels);
-    ctl.generate_bootstrapping_keys(slots);
     auto cc = in->GetCryptoContext();
+    // This setup process only emits keys. FFT plaintext matrices belong to the evaluator.
+    PrivateKey<DCRTPoly> sk;
+    if (!Serial::DeserializeFromFile((dir / "secret-key.txt").string(), sk, SerType::BINARY) ||
+        sk->GetKeyTag() != in->GetKeyTag())
+        throw std::runtime_error("fresh key tag mismatch");
+    FHECKKSRNS generator;
+    auto pre = std::make_shared<CKKSBootstrapPrecom>();
+    pre->m_slots = slots;
+    pre->m_dim1 = 0;
+    pre->m_paramsEnc = GetCollapsedFFTParams(slots, p.cts, 0);
+    pre->m_paramsDec = GetCollapsedFFTParams(slots, p.stc, 0);
+    generator.m_bootPrecomMap[slots] = pre;
+    cc->InsertEvalAutomorphismKey(generator.EvalBootstrapKeyGen(sk, slots));
     auto& keys = cc->GetEvalAutomorphismKeyMap(in->GetKeyTag());
     std::ofstream indices(dir/"bootstrap-indices.txt");
     std::set<int> extra;

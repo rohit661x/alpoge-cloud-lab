@@ -1,0 +1,37 @@
+name: Build native Intel macOS stage
+on:
+  push:
+    branches: [resnet-followup-intel-build-20261122]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15-intel
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile pinned OpenFHE and stage executables
+        run: |
+          uname -m
+          sysctl machdep.cpu.brand_string hw.memsize
+          if ! brew list libomp >/dev/null 2>&1; then brew install libomp; fi
+          prefix=$(brew --prefix libomp)
+          export CPATH="$prefix/include"
+          export LIBRARY_PATH="$prefix/lib"
+          export LDFLAGS="-L$prefix/lib -Wl,-rpath,$prefix/lib"
+          export CXXFLAGS="-I$prefix/include -Wno-unused-command-line-argument -Wno-deprecated-declarations -Wno-unused-but-set-variable"
+          export CFLAGS="$CXXFLAGS"
+          export BUILD_JOBS=3
+          bash stage-replication/build.sh "$RUNNER_TEMP/native-stage"
+      - name: Package binaries and native libraries
+        run: |
+          cd "$RUNNER_TEMP/native-stage"
+          tar czf "$GITHUB_WORKSPACE/native-intel-build.tgz" install/lib harness/stage_native arms/old8/stage_ninth arms/old9/stage_ninth arms/parents/stage_ninth arms/common11/stage_portable pack reference
+          shasum -a 256 "$GITHUB_WORKSPACE/native-intel-build.tgz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-intel-build
+          path: native-intel-build.tgz
+          retention-days: 3
