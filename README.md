@@ -1,4 +1,4 @@
-# Rohit Suryadevara’s research lab
+# Rohit’s research lab
 
 I use this workspace to investigate questions that can be answered with a proof, a reproducible experiment, or both. The first projects grew out of computational number theory and encrypted inference. Each entry below links to the evidence and says what you can check for yourself.
 
