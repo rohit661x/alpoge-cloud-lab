@@ -1,12 +1,8 @@
 cff-version: 1.2.0
-message: "Cite this repository and identify the specific study and commit used."
-title: "Cryptography research portfolio: encrypted inference and finite-field certificates"
+message: "Cite the specific project, result and commit used; standalone studies have their own citation metadata."
+title: "Rohit Suryadevara’s research lab"
 type: software
 authors:
   - family-names: Suryadevara
     given-names: Rohit
-repository-code: "https://github.com/rohit661x/alpoge-cloud-lab"
-keywords:
-  - homomorphic encryption
-  - reproducible research
-  - finite fields
+repository-code: "https://github.com/rohit661x/research-lab"

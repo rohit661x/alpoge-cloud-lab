@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+defaults:
+  run:
+    working-directory: projects/number-theory
 permissions:
   contents: read
 jobs:
@@ -44,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cubic-crypto-evidence
-          path: crypto-evidence/
+          path: projects/number-theory/crypto-evidence/
           if-no-files-found: error
       - name: Build the pinned archive lemma and its specialization
         run: |
@@ -62,7 +65,7 @@ jobs:
         if: always()
         with:
           name: gaussian-verification
-          path: evidence/
+          path: projects/number-theory/evidence/
           if-no-files-found: ignore
 
   independent-census:
@@ -113,5 +116,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: deep-cubic-audit
-          path: deep-evidence/
+          path: projects/number-theory/deep-evidence/
           if-no-files-found: error

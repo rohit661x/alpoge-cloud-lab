@@ -24,11 +24,11 @@ jobs:
           base='https://math.mit.edu/~drew/grh'
           curl --fail --silent --show-error --location --retry 3 "$base/challenge.ndjson.zst" -o "$RUNNER_TEMP/challenge.ndjson.zst"
           curl --fail --silent --show-error --location --retry 3 "$base/con-leche-compare.log" -o "$RUNNER_TEMP/con-leche-compare.log"
-          python3 research/audit_export.py challenge "$RUNNER_TEMP/challenge.ndjson.zst" "$RUNNER_TEMP/con-leche-compare.log" | tee provenance/challenge.json
+          python3 projects/number-theory/research/audit_export.py challenge "$RUNNER_TEMP/challenge.ndjson.zst" "$RUNNER_TEMP/con-leche-compare.log" | tee provenance/challenge.json
       - name: Verify compressed and raw solution in a single streaming pass
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location 'https://math.mit.edu/~drew/grh/solution.ndjson.zst' | python3 research/stream_solution.py | tee provenance/solution.json
+          curl --fail --silent --show-error --location 'https://math.mit.edu/~drew/grh/solution.ndjson.zst' | python3 projects/number-theory/research/stream_solution.py | tee provenance/solution.json
       - uses: actions/upload-artifact@v4
         with:
           name: proof-export-integrity

@@ -43,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location --retry 3 'https://math.mit.edu/~drew/grh/challenge.ndjson.zst' -o "$RUNNER_TEMP/challenge.ndjson.zst"
-          python3 research/audit_export.py challenge "$RUNNER_TEMP/challenge.ndjson.zst" --write-background "$RUNNER_TEMP/background.ndjson" | tee background-evidence/challenge-background.json
+          python3 projects/number-theory/research/audit_export.py challenge "$RUNNER_TEMP/challenge.ndjson.zst" --write-background "$RUNNER_TEMP/background.ndjson" | tee background-evidence/challenge-background.json
           cd "$RUNNER_TEMP"
           echo '8d7dc80c14d6c55c397e2351799f1b30ee16391833a4a7bcc5e228a996df10fd  background.ndjson' | sha256sum --check
       - name: Replay all 51,687 remaining declaration records

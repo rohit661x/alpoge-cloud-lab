@@ -1,0 +1,17 @@
+name: Offline number-theory checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run the Python suite and verify both example certificates
+        working-directory: projects/number-theory
+        run: |
+          bash cloud-setup.sh python
+          python3 goldilocks_order.py

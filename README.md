@@ -1,54 +1,26 @@
-# Cryptography research portfolio · Rohit Suryadevara
+# Rohit Suryadevara’s research lab
 
-When does sending fewer encryption keys make an application faster? How can a developer check an arithmetic implementation against an exact answer? This portfolio follows those two questions from experiment design to evidence you can run locally.
+I use this workspace to investigate questions that can be answered with a proof, a reproducible experiment, or both. The first projects grew out of computational number theory and encrypted inference. Each entry below links to the evidence and says what you can check for yourself.
 
-**[Encrypted inference study](research/conv-mnist-upgrade/README.md)** · **[Finite-field test vector](docs/FINITE-FIELDS.md)** · **[Artifact and reuse guide](docs/ARTIFACTS.md)**
+| Project | Question and result | Start here |
+| --- | --- | --- |
+| Rotation-key latency | When should an encrypted classifier upload two extra keys? A request-12 payoff observed on one Mac did not reproduce on a physical client/server pair. | [Standalone study, timings and replay](https://github.com/rohit661x/rotation-key-latency) |
+| Finite-field certificates | How do you test arithmetic more than 10³⁸ steps into a recurrence? An exact order certificate gives a known-answer test for a cubic field used in Plonky3. | [Worked example](projects/number-theory/docs/FINITE-FIELDS.md) |
+| Computational number theory | Which finite calculations can we check directly? A 1,024-bit prime certificate, quadratic-form computations and a Gaussian lattice example connect executable checks to precise statements. | [Code, examples and formal checks](projects/number-theory/) |
 
-## Featured study: when does uploading two more keys pay off?
+## Try one result
 
-A client sends an encrypted image to a server running a digit classifier. The server also needs *rotation keys*: they let it rearrange encrypted values without decrypting them. Starting with 17 keys makes the initial upload smaller. Sending two more after the fifth prediction can save work on later images. The practical question is how long the session has to last to recover that cost.
-
-On one M5 Pro, with keys prepared in advance, the upgrade recovered its cost by **request 12** on average and stayed ahead through request 24. When an M5 Pro client sent the same workload to a separate MacBook Air evaluator, the upgrade was still **161 ms behind at request 12**. At request 24 it was 9 ms ahead on average, but the interval included both a loss and a gain. The single-machine cutoff did not transfer to this pair.
-
-![Two-Mac upgrade minus fixed-17 time since request five. At request 12 the upgrade was 161 ms slower (95% interval: 92 to 237 ms slower). At request 24 it was 9 ms faster on average (114 ms faster to 127 ms slower).](docs/figures/two-mac-recovery.svg)
-
-The two-Mac prepared-key run covered **12 independently generated client key sets and 1,152 predictions on eight distinct images**; every predicted class matched the reference. That checks the tested inputs, not classifier accuracy on new images. On the prespecified mix of short and long sessions, upgrading averaged **194 ms slower** than the fastest fixed policy (17 keys); its 95% interval ranged from 92 ms faster to 585 ms slower. The separate on-demand run has **2 of 4** completed blocks. No latency conclusion is drawn from that partial run.
-
-**Use the result:** If you are choosing a key policy, measure the initial upload and cumulative response time on your own client/server connection before adopting a cutoff. The published [per-key timings](research/conv-mnist-upgrade/two-mac/prepared-prefixes.csv) let you check our paired comparisons. The [study](research/conv-mnist-upgrade/README.md) explains the clocks, model, session mix and uncertainty.
-
-## Run an independent check
-
-Clone the repository, then choose either check. Both run offline with Python 3.11+ and its standard library. No GPU, model download or cloud account is needed.
+From a clone of this lab, with Python 3.11+ and no dependencies:
 
 ```sh
-git clone https://github.com/rohit661x/alpoge-cloud-lab.git
-cd alpoge-cloud-lab
-```
-
-**Replay the encrypted-inference study:**
-
-```sh
-python3 research/conv-mnist-upgrade/verify.py
-```
-
-A pass rebuilds the single-machine report from archived records and recalculates the two-Mac comparisons from 12 published rows. This does not run a fresh encrypted benchmark.
-
-**Verify a finite-field certificate:**
-
-```sh
+cd projects/number-theory
 python3 goldilocks_order.py
 ```
 
-The expected order is `340282366762482138508632908526633615363`. The [worked example](docs/FINITE-FIELDS.md) gives a coefficient triple you can use to test another implementation.
+The expected order is `340282366762482138508632908526633615363`. The verifier checks the prime factors and rules out every proper divisor that could be the order; it does not enumerate the cycle.
 
-## Other work in this repository
+## Continue the work
 
-- **Exact arithmetic:** [Derivation, witnesses, and prior work](research/RESULTS.md) for the cubic field also used in Plonky3. The certificate establishes an algebraic order; it makes no performance or protocol-security claim.
-- **Computational number theory:** [Python examples and formal verification notes](docs/NUMBER-THEORY.md) cover quadratic forms, prime-count bounds, and selected finite constructions associated with Alpöge’s work. The encrypted-inference results and finite-field certificate do not depend on the Riemann hypothesis.
-- **Earlier encrypted-computation experiments:** The [release guide](docs/ARTIFACTS.md#earlier-encrypted-computation-releases) identifies which BFV stencil, filter-bank and ResNet20 results were measured, which were estimated, and how to replay each.
+I keep exploratory code with its question under [projects/](projects/). When a study has its own audience, evidence and replay, it can graduate to a separate repository. [Starting a study](docs/START-A-STUDY.md) gives the short brief I use to decide what is worth testing. The [artifact guide](docs/ARTIFACTS.md) explains citation, reuse and where older links point.
 
-## Authorship, citation and feedback
-
-Rohit Suryadevara maintains this collection. Research preparation and code for the featured study were predominantly AI-generated; the linked artifacts show what readers can check independently. When citing a timing, identify the study, hardware, cohort and exact commit. Use GitHub’s **Cite this repository** action for the collection, and the [artifact guide](docs/ARTIFACTS.md) for model credits, dataset terms and reuse.
-
-Reproduced a different result? [Open an issue](https://github.com/rohit661x/alpoge-cloud-lab/issues/new) with the command, commit, Python version, and the first output that differs. A measurement from another machine pair is especially useful if it specifies the connection, timing boundaries and whether the keys were prepared in advance.
+Replications, counterexamples and earlier references are useful contributions. [Open an issue](https://github.com/rohit661x/research-lab/issues/new) with the project, exact claim, and enough detail to check it. Findings here have different statuses; a passing test or public release is not peer review.
