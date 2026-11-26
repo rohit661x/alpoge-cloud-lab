@@ -5,19 +5,8 @@ I use this workspace to investigate questions that can be answered with a proof,
 | Project | Question and result | Start here |
 | --- | --- | --- |
 | Rotation-key latency | When should an encrypted classifier upload two extra keys? A request-12 payoff observed on one Mac did not reproduce on a physical client/server pair. | [Standalone study, timings and replay](https://github.com/rohit661x/rotation-key-latency) |
-| Finite-field certificates | How do you test arithmetic more than 10³⁸ steps into a recurrence? An exact order certificate gives a known-answer test for a cubic field used in Plonky3. | [Worked example](projects/number-theory/docs/FINITE-FIELDS.md) |
+| Finite-field certificates | An order certificate proves that one element generates the norm-one subgroup of the Goldilocks cubic field used in Plonky3. The accompanying test vector provides a reference value for checking other implementations. | [Certificate and test vector](projects/number-theory/docs/FINITE-FIELDS.md) |
 | Computational number theory | Which finite calculations can we check directly? A 1,024-bit prime certificate, quadratic-form computations and a Gaussian lattice example connect executable checks to precise statements. | [Code, examples and formal checks](projects/number-theory/) |
-
-## Try one result
-
-From a clone of this lab, with Python 3.11+ and no dependencies:
-
-```sh
-cd projects/number-theory
-python3 goldilocks_order.py
-```
-
-The expected order is `340282366762482138508632908526633615363`. The verifier checks the prime factors and rules out every proper divisor that could be the order; it does not enumerate the cycle.
 
 ## Continue the work
 
