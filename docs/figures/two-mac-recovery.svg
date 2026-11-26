@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="540" height="228" preserveAspectRatio="xMinYMin meet" viewBox="0 0 540 228" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>Two-Mac key upgrade recovery</title>
+	<desc>Elapsed time from request five: positive differences mean upgrading was slower. Points show means and bars show 95% paired bootstrap intervals.</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="540" height="228"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-228)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="540" height="228" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,98%,97%); fill-rule: evenodd;"/>
+			<text x="15" y="201" style="font-family: Helvetica-Bold; font-size: 23px;fill: rgb(8%,18%,22%); stroke:none;" transform="translate(0,402) scale(1,-1)">Did the key upgrade pay off?</text>
+			<text x="15" y="176" style="font-family: Helvetica; font-size: 14px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,352) scale(1,-1)">Two Macs  /  time since request 5  /  upgrade minus fixed 17</text>
+			<path d="M 155,53 L 155,151 Z" style="stroke: rgb(79%,84%,84%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="141.9935" y="36" style="font-family: Helvetica; font-size: 13px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,72) scale(1,-1)">-100</text>
+			<path d="M 235,53 L 235,151 Z" style="stroke: rgb(8%,18%,22%); stroke-linecap: butt; stroke-width: 1.5;"/>
+			<text x="231.386" y="36" style="font-family: Helvetica; font-size: 13px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,72) scale(1,-1)">0</text>
+			<path d="M 315,53 L 315,151 Z" style="stroke: rgb(79%,84%,84%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="304.158" y="36" style="font-family: Helvetica; font-size: 13px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,72) scale(1,-1)">100</text>
+			<path d="M 395,53 L 395,151 Z" style="stroke: rgb(79%,84%,84%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="384.158" y="36" style="font-family: Helvetica; font-size: 13px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,72) scale(1,-1)">200</text>
+			<text x="15" y="125" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(8%,18%,22%); stroke:none;" transform="translate(0,250) scale(1,-1)">Request 12</text>
+			<path d="M 308.952038,130 L 424.314604,130 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 308.952038,124 L 308.952038,136 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 424.314604,124 L 424.314604,136 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 2;"/>
+			<circle cx="363.85874480000007" cy="130" r="5" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,43%,39%); fill-rule: evenodd;"/>
+			<text x="453" y="125" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(8%,18%,22%); stroke:none;" transform="translate(0,250) scale(1,-1)">+161 ms</text>
+			<text x="15" y="73" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(8%,18%,22%); stroke:none;" transform="translate(0,146) scale(1,-1)">Request 24</text>
+			<path d="M 143.607557,78 L 336.612246,78 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 143.607557,72 L 143.607557,84 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 336.612246,72 L 336.612246,84 Z" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 2;"/>
+			<circle cx="227.4892888" cy="78" r="5" style="stroke: rgb(0%,43%,39%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,43%,39%); fill-rule: evenodd;"/>
+			<text x="453" y="73" style="font-family: Helvetica-Bold; font-size: 15px;fill: rgb(8%,18%,22%); stroke:none;" transform="translate(0,146) scale(1,-1)">-9 ms</text>
+			<text x="15" y="11" style="font-family: Helvetica; font-size: 14px;fill: rgb(26%,36%,40%); stroke:none;" transform="translate(0,22) scale(1,-1)">Positive = slower. Paired means and 95% intervals over 12 key sets.</text>
+		</g>
+	</g>
+</svg>

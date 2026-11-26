@@ -2,6 +2,8 @@
 
 For a client already using 17 rotation keys after five predictions, uploading the keys for rotations +512 and +2048 at request six took extra time immediately. The upgrade first held a cumulative lead over continuing with 17 keys at **prediction 12** with keys prepared in advance, and **prediction 13** with keys generated on demand. Both leads persisted through the last measured prediction, number 24. These are averages from one Apple M5 Pro running the client and evaluator as separate processes.
 
+A second experiment moved the evaluator to a separate MacBook Air. With prepared keys, upgrading was still **161 ms slower at prediction 12**, measured from the end of prediction five. At prediction 24 the estimated saving was 9 ms, with a 95% interval spanning a 114 ms saving to a 127 ms delay. [Two-Mac results](#two-mac-replication)
+
 | Conditional comparison against staying at 17 keys | Prepared keys | On-demand keys |
 | --- | ---: | ---: |
 | Independent fresh client keys | 12 | 4 |
@@ -17,9 +19,9 @@ The trained TenSEAL ConvMNIST classifier ran on the first eight MNIST test image
 
 The client paced writes at 500 Mbit/s over local TCP. Replies were unpaced and each evaluator used one thread. The prepared-key clock ran from the first setup write through decryption. The on-demand clock also included preparing the initial public catalog and generating incremental keys when needed. Both clocks excluded shared secret-key setup, input encryption, process startup and connection establishment. The key counts and timings depend on this model, packing, software and workload.
 
-## Reproduce the completed study
+## Reproduce the results
 
-Run this from the checkout root with stock Python 3.11 or newer. The command works offline. It checks the distribution and archive hashes, rebuilds the scalar predictions from the IDX fixtures and weights, reconciles the client and evaluator journals, and reproduces the published timing summaries from the recorded observations.
+Run this from the checkout root with stock Python 3.11 or newer. The command works offline. For the single-Mac study, it checks the archive, rebuilds the scalar predictions from the IDX fixtures and weights, reconciles the client and evaluator journals, and reproduces the HTML report. For the two-Mac study it recomputes the prepared timing comparisons and their intervals from the published block-level endpoints.
 
 ```sh
 python3 research/conv-mnist-upgrade/verify.py
@@ -27,11 +29,21 @@ python3 research/conv-mnist-upgrade/verify.py
 
 The HTML report includes the measured workload comparisons and an interactive session-length control. Download it and open it locally. The replay ZIP contains the original protocol, native runner and build instructions for collecting new measurements, model and dataset attribution, machine-readable results and a provenance record for this repository edition. That record documents two normalized paths in older pilot metadata and identifies the archival source by SHA-256. Research preparation and code were predominantly AI-generated. [Report](report.html) · [Replay archive](replay.zip) · [SHA-256 manifest](SHA256SUMS)
 
-## Partial two-Mac replication · November 25, 2026
+## Two-Mac replication
 
-The physical M5 Pro client and M5 MacBook Air evaluator completed **10 of 12** prepared-key blocks. All **960 of 960** predictions agreed with the scalar reference and labels across eight images, with 9,600 decrypted logits checked. A separate four-prediction smoke test passed. Eight uncommitted attempts at the eleventh block produced 54 prediction receipts, all excluded. The on-demand replication had completed **0 of 4** blocks at this snapshot.
+The Apple M5 Pro client sent requests through an authenticated SSH tunnel to an M5 MacBook Air evaluator. All **12 prepared-key blocks** completed. The local verifier checked 11,520 decrypted logits across eight distinct images. All **1,152 predictions** matched the scalar classifier and the digit label. Each block used a fresh client key. Its four policies processed identical encrypted inputs at each request position.
 
-The checkpoint publishes aggregate counts and digests of the underlying local verification records. The repository check validates its checksum and count consistency. Independent replay of the two-Mac trial would require the underlying cross-host journals. The primary cross-host latency comparison is pending. [Partial checkpoint](partial/two-mac-checkpoint.json)
+| Prepared-key comparison | Adaptive minus comparator | 95% paired bootstrap interval |
+| --- | ---: | ---: |
+| Primary session mix, versus the fastest fixed policy (17 keys) | +194.2 ms | −92.4 to +584.9 ms |
+| From the end of request 5 through request 12, versus staying at 17 | +161.1 ms | +92.4 to +236.6 ms |
+| From the end of request 5 through request 24, versus staying at 17 | −9.4 ms | −114.2 to +127.0 ms |
+
+Positive differences mean the adaptive policy took longer. On the primary 80% short / 20% long session mix, the adaptive policy averaged **14.243 s**, and fixed 17 averaged **14.049 s**. Their clock started with the first public setup write. For the request-12 comparison, each policy’s clock restarted after its fifth decryption. Only one of the twelve blocks favored upgrading by request 12, the recovery point observed on the single Mac. Eight favored it by request 24. The intervals use 20,000 paired resamples of whole key blocks from this machine pair. Each primary resample reselects the fastest of the three fixed policies.
+
+The on-demand cohort had **2 of 4 blocks** committed when its recovery log last updated on November 26, 2026 at 02:17 UTC. Those two blocks contain 192 prediction receipts. A connection interruption left 15 further receipts in an incomplete block, excluded under the protocol. The on-demand latency result remains pending.
+
+The CSV publishes elapsed nanoseconds from setup through the selected decryptions, one row per completed fresh-key block. The JSON contains the reported comparisons, correctness counts and SHA-256 digests of the source records. The verifier reproduces the timing arithmetic and intervals from the CSV. The correctness counts come from local verification of the full cross-host journals, which this aggregate release omits. The earlier checkpoint records the first interruption at 10 of 12 prepared blocks. [Prepared timing data](two-mac/prepared-prefixes.csv) · [Results and provenance](two-mac/results.json) · [Historical checkpoint](partial/two-mac-checkpoint.json)
 
 ## Model and data attribution
 
